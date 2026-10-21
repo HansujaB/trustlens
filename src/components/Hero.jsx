@@ -15,62 +15,62 @@ function ReportPreview() {
       <div className="scene-axis axis-horizontal" />
       <div className="scene-axis axis-vertical" />
       <span className="scene-coordinate coordinate-top">
-        EVIDENCE, NOT ASSUMPTIONS.
+        ON-CHAIN FACTS. HUMAN CONTEXT.
       </span>
       <div className="report-back-sheet">
-        <span>THE DETAILS MAKE THE DIFFERENCE.</span>
+        <span>UNDERSTAND THE NEXT SIGNATURE.</span>
       </div>
       <article className="report-paper">
         <div className="paper-top">
           <span>
-            <span className="tiny-square" /> TRUSTLENS / FIELD REPORT
+            <span className="tiny-square" /> TRUSTLENS / TRANSACTION REPORT
           </span>
           <span>№ 001</span>
         </div>
         <div className="paper-project">
           <div className="project-monogram">
-            a<span>↗</span>
+            ◎<span>↗</span>
           </div>
           <div>
-            <h2>Atlas Protocol</h2>
+            <h2>Before you approve</h2>
             <p>
-              BASE NETWORK <span>·</span> ILLUSTRATIVE EXAMPLE
+              SOLANA <span>·</span> ILLUSTRATIVE EXAMPLE
             </p>
           </div>
         </div>
         <div className="paper-summary">
           <span className="paper-eyebrow">THE FINDING</span>
           <h3>
-            An audit exists.
+            A swap looks simple.
             <br />
-            Does it cover <em>this contract?</em>
+            What are you <em>authorizing?</em>
           </h3>
           <p>
-            The linked report covers an earlier implementation. Current coverage
-            is unverified.
+            A proposed token swap includes a delegate approval. Understand the
+            permission before making your decision.
           </p>
         </div>
         <div className="paper-checks">
           <div>
             <span>
               <FileText size={14} />
-              Audit publication
+              Instruction decoded
             </span>
-            <Status type="supported">Found</Status>
+            <Status type="supported">Approval</Status>
           </div>
           <div>
             <span>
               <ScanLine size={14} />
-              Current coverage
+              Token identity
             </span>
             <Status type="unknown">Unverified</Status>
           </div>
           <div>
             <span>
               <Link2 size={14} />
-              Source trail
+              Web investigation
             </span>
-            <span className="source-count">3 references ↗</span>
+            <span className="source-count">TinyFish context ↗</span>
           </div>
         </div>
         <a className="paper-bottom" href="#evidence">
@@ -81,17 +81,17 @@ function ReportPreview() {
       <div className="annotation-note">
         <span className="annotation-line" />
         <span>
-          A claim is a starting point.
+          Simulation is a preview.
           <br />
-          <em>Not a conclusion.</em>
+          <em>Not a safety guarantee.</em>
         </span>
       </div>
       <div className="evidence-stamp">
         <Check size={15} />
         <span>
-          SOURCES
+          READ
           <br />
-          <strong>ATTACHED</strong>
+          <strong>BEFORE SIGNING</strong>
         </span>
       </div>
     </div>
@@ -104,20 +104,20 @@ export default function Hero() {
       <section className="hero container" aria-labelledby="hero-title">
         <div className="hero-copy">
           <div className="eyebrow">
-            <span className="live-dot" /> A CLEARER LOOK AT WEB3
+            <span className="live-dot" /> A CLEARER LOOK AT SOLANA
           </div>
           <h1 id="hero-title">
-            Trust is a claim.
+            Every signature
             <br />
-            Proof is a <em>click.</em>
+            tells a <em>story.</em>
           </h1>
           <p className="hero-description">
-            Look beyond the promises. Explore a project’s audit claims, contract
-            controls, and recent news—with the evidence in plain sight.
+            Understand what moved. See what you’re authorizing. Explore Solana
+            transactions with plain-English explanations and web evidence from TinyFish.
           </p>
           <div className="hero-actions">
             <a className="button button-blue" href="#investigate">
-              Check a project{" "}
+              Explore TrustLens{" "}
               <span className="button-icon">
                 <ArrowUpRight size={20} />
               </span>
@@ -128,10 +128,10 @@ export default function Hero() {
           </div>
           <div className="hero-assurances">
             <span>
-              <LockKeyhole size={13} /> No wallet connection
+              <LockKeyhole size={13} /> No signing or sending
             </span>
             <span>
-              <Link2 size={13} /> Every finding has a source
+              <Link2 size={13} /> Facts and context, separated
             </span>
           </div>
         </div>
@@ -146,19 +146,19 @@ export default function Hero() {
       <div className="scope-strip">
         <div className="container scope-inner">
           <span className="scope-caption">
-            ONE PROJECT. THREE PERSPECTIVES.
+            ONE TRANSACTION. THE FULL PICTURE.
           </span>
           <span>
             <span className="scope-dot" />
-            The claims
+            Explain what happened
           </span>
           <span>
             <span className="scope-dot" />
-            The contract
+            Review before signing
           </span>
           <span>
             <span className="scope-dot" />
-            The conversation
+            Investigate the context
           </span>
           <span className="scope-plus">+</span>
         </div>

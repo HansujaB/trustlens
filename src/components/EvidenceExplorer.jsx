@@ -11,61 +11,61 @@ import { SectionLabel, Status } from "./ui";
 
 const examples = [
   {
-    id: "audit",
+    id: "facts",
     index: "01",
-    name: "The audit claim",
-    subtitle: "A badge is only the beginning.",
-    claim: "“Our current deployment is fully audited.”",
-    result: "Current coverage is unverified.",
+    name: "What actually moved",
+    subtitle: "Transfers and fees are different.",
+    claim: "“Why did my balance drop by more than 0.5 SOL?”",
+    result: "0.5 SOL sent. A separate fee paid.",
     detail:
-      "The linked report names implementation A. The selected contract now points to implementation B. That report alone does not establish coverage of the current code.",
-    type: "unknown",
-    status: "Unverified",
+      "In this fictional transfer, 500,000,000 lamports go to the recipient and 5,000 lamports pay the network fee. The sender’s balance decreases by exactly 0.500005 SOL. No other account changes occur in this fixture.",
+    type: "supported",
+    status: "Illustrative chain facts",
     sources: [
-      "Project security page",
-      "Report scope · implementation A",
-      "Chain observation · implementation B",
+      "System Program · decoded transfer",
+      "Transaction metadata · 5,000-lamport fee",
+      "Pre/post balances · sender and recipient",
     ],
     impact:
-      "An audit can be genuine and still leave today’s deployment unchecked.",
+      "Exact base units belong in the report. A market value is a separate estimate.",
   },
   {
-    id: "contract",
+    id: "permission",
     index: "02",
-    name: "The contract controls",
-    subtitle: "Know who can change the rules.",
-    claim: "“The contract cannot be changed.”",
-    result: "An upgrade path is present.",
+    name: "The requested permissions",
+    subtitle: "An approval deserves an explanation.",
+    claim: "“I only meant to swap a token.”",
+    result: "A delegate allowance needs review.",
     detail:
-      "In this fictional example, a supported contract check identifies an administrator-controlled upgrade path. That conflicts with the website’s claim of immutability.",
-    type: "conflict",
-    status: "Contradicted",
+      "This fictional payload also authorizes a delegate to spend 100 tokens from a token account. Whether that permission is intended needs review. No real simulation has run in this preview.",
+    type: "unknown",
+    status: "Review required",
     sources: [
-      "Project documentation",
-      "Verified proxy source",
-      "Upgrade authority observation",
+      "SPL Token · approval instruction",
+      "Decoded delegate and allowance",
+      "User intent · permission not established",
     ],
     impact:
-      "An upgrade control is a permission to understand—not, by itself, proof of a scam.",
+      "A permission can be legitimate. Explain its scope instead of treating every approval as a scam.",
   },
   {
-    id: "news",
+    id: "identity",
     index: "03",
-    name: "The recent developments",
-    subtitle: "Find the context behind the headlines.",
-    claim: "“Users are reporting withdrawal delays.”",
-    result: "Reports found. Cause unverified.",
+    name: "The web investigation",
+    subtitle: "A familiar name is not an identity.",
+    claim: "“Is this the token from the official website?”",
+    result: "The exact mint is not established.",
     detail:
-      "Sample public posts describe delays. The project has published a response, but those statements do not independently establish the cause or whether this contract is affected.",
+      "This example shows how a future report handles uncertainty: a matching token name alone cannot link a website to the mint in the transaction. TinyFish evidence must include the exact identifier or leave identity unverified.",
     type: "unknown",
-    status: "Reported concern",
+    status: "Identity unverified",
     sources: [
-      "Public discussion · sample posts",
-      "Project response",
-      "Affected contract · not established",
+      "Transaction · output mint identifier",
+      "Project documentation · candidate source",
+      "Exact mint match · not established",
     ],
     impact:
-      "A concern deserves context. Repeated posts do not turn an allegation into a fact.",
+      "Search → Fetch → correlate exact identifiers. Missing web evidence is not proof of malicious behavior.",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function EvidenceExplorer() {
           </h2>
           <p>
             A conclusion is only as useful as the evidence behind it. Here’s
-            what a report could show.
+            what a transaction report could show.
           </p>
         </div>
         <div className="evidence-layout">
@@ -146,7 +146,7 @@ export default function EvidenceExplorer() {
             <div className="example-disclaimer">
               <Globe2 size={16} />
               <p>
-                Fictional project. Real questions.
+                Fictional transactions. Real questions.
                 <br />
                 These examples show the format, not a live investigation.
               </p>
@@ -161,11 +161,11 @@ export default function EvidenceExplorer() {
             key={item.id}
           >
             <div className="panel-header">
-              <span>ATLAS PROTOCOL / SAMPLE REPORT</span>
+              <span>SOLANA / SAMPLE REPORT</span>
               <span className="sample-pill">ILLUSTRATIVE</span>
             </div>
             <div className="claim-block">
-              <span className="paper-eyebrow">WHAT THE PROJECT SAYS</span>
+              <span className="paper-eyebrow">THE QUESTION</span>
               <blockquote>{item.claim}</blockquote>
             </div>
             <div className="evidence-connector">

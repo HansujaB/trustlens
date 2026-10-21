@@ -18,8 +18,8 @@ export default function Principles() {
           <em>More open book.</em>
         </h2>
         <p>
-          A polished website isn’t proof. Neither is a confident AI answer.
-          TrustLens is designed to keep the facts—and their limits—visible.
+          On-chain facts, simulation estimates, and external claims are
+          different kinds of evidence. TrustLens keeps that distinction visible.
         </p>
         <a className="text-link" href="#faq">
           Understand the limits <ArrowUpRight size={17} />
@@ -33,8 +33,8 @@ export default function Principles() {
           <div>
             <h3>The web, with a paper trail.</h3>
             <p>
-              TinyFish-powered research follows documentation, audit
-              publications, and recent developments.
+              Planned TinyFish Search and Fetch investigate exact mints and
+              program IDs. Web Agent handles selected multi-step questions.
             </p>
             <span className="technology-note">
               <Waves size={13} /> WEB RESEARCH WITH TINYFISH
@@ -46,10 +46,11 @@ export default function Principles() {
             <Braces size={23} />
           </span>
           <div>
-            <h3>The contract, in context.</h3>
+            <h3>The transaction, decoded.</h3>
             <p>
-              Selected on-chain checks help explain the deployment and its
-              controls. This is limited screening, not a security audit.
+              Solana RPC establishes executed effects. Simulation previews
+              proposed effects. Supported parsers explain instructions; unknown
+              ones stay visible.
             </p>
           </div>
         </article>
@@ -60,8 +61,9 @@ export default function Principles() {
           <div>
             <h3>The unknowns, out in the open.</h3>
             <p>
-              No mystery trust score. No “safe” stamp. Just supported findings,
-              contradictions, and clearly marked gaps.
+              No opaque safety score. Every warning needs a reason. An unknown
+              program is not automatically malicious, and successful simulation
+              is not proof of safety.
             </p>
           </div>
         </article>

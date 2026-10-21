@@ -1,42 +1,41 @@
-# TrustLens landing page
+# TrustLens — Solana transaction intelligence
 
-A standalone React + Vite landing page. The original Connext application in the parent workspace is unchanged.
+React + Vite frontend for the Solana transaction explainer, investigator, and pre-signature review product. See [plan.md](plan.md) for architecture, backend contracts, milestones, and acceptance criteria.
 
 ## Run
 
 ```sh
-cd trustlens
 npm install
 npm run dev
+npm run build
 ```
 
-For a production bundle, run `npm run build`. Preview that bundle with `npm run preview`.
-
-On this Windows machine the global npm shim points at a missing installation. If `npm` fails, invoke the installed CLI directly:
+On this machine, if the npm shim is broken:
 
 ```powershell
-node 'C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js' install
 node 'C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js' run dev
 ```
 
-## Components
+## Implemented frontend
 
-- `Header`: desktop navigation and accessible mobile menu.
-- `Hero`: editorial introduction and a composed sample report.
-- `HowItWorks`: three illustrated steps.
-- `EvidenceExplorer`: three selectable report perspectives with expandable source trails.
-- `Principles`: research approach and limitations.
-- `Pricing`: indicative plans and working preview dialogs.
-- `FAQ`: keyboard-accessible disclosure elements.
-- `InvestigationForm`: local URL/address validation and preview handoff.
-- `PreviewDialog`: native modal dialog, Escape dismissal, focus restoration.
-- `Footer`: navigation and brand treatment.
-- `ui`: shared brand, section labels, links, and statuses.
+- TrustLens identity and responsive editorial landing page, updated for Solana.
+- Three-mode workspace: transaction signature, unsigned base64 payload, public wallet address.
+- Local base58 decoded-length checks, base64 encoding/size validation, and selected cluster.
+- Clearly labeled fictional reports; arbitrary user inputs are never presented as analyzed.
+- Selectable underlined glossary definitions and a step-through transfer explanation.
+- Sample wallet activity with reversible likely-spam filtering.
+- Keyboard-operable tabs, expandable evidence, navigation, FAQ, reduced-motion support.
+- Capability roadmap covering live analysis, trade verification, wallet history, sharing, narration, and MP4 export.
 
-`src/styles.css` owns the blue/white visual system, component styles, responsive layouts, and reduced-motion behavior. Lucide supplies icons. Instrument Serif and DM Sans load from Google Fonts with system fallbacks.
+## Not connected
 
-## Scope
+There is no RPC, simulation backend, wallet connection, TinyFish integration, historical market feed, report persistence, TTS, or MP4 renderer in this frontend. Inputs stay in page memory and are not uploaded. No transactions are signed or sent. The step-through is not a narrated video. No 289-mainnet-transaction benchmark has been performed.
 
-This is the landing-page UI, not the investigation service. Inputs are handled locally and are not sent to research providers. Atlas Protocol and its findings are fictional. Paid plans are labeled as proposed; there is no checkout or billing integration. No TinyFish credits are consumed by the page.
+## Verification
 
-The source report examples are deliberately not linked to fabricated external evidence. The expandable references explain their illustrative status.
+```sh
+node --test src/lib/inputValidation.test.js
+npm run build
+```
+
+The validation tests cover format and byte-length boundaries only, not transaction validity or safety. Backend correctness and integration acceptance criteria are detailed in plan.md.

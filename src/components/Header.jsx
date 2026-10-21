@@ -5,7 +5,7 @@ import { Brand } from "./ui";
 const links = [
   ["How it works", "#how-it-works"],
   ["The evidence", "#evidence"],
-  ["Pricing", "#pricing"],
+  ["Capabilities", "#capabilities"],
 ];
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Header() {
           ))}
         </nav>
         <a href="#investigate" className="nav-cta">
-          Take a closer look <ArrowUpRight size={15} />
+          Open workspace <ArrowUpRight size={15} />
         </a>
         <button
           className="menu-toggle"

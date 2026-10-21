@@ -10,7 +10,7 @@ import { SectionLabel } from "./ui";
 export default function HowItWorks() {
   return (
     <section className="section container" id="how-it-works">
-      <SectionLabel number="01">A LITTLE DUE DILIGENCE</SectionLabel>
+      <SectionLabel number="01">FROM DATA TO UNDERSTANDING</SectionLabel>
       <div className="section-heading">
         <h2>
           You don’t need to read code.
@@ -18,8 +18,8 @@ export default function HowItWorks() {
           You need <em>the full picture.</em>
         </h2>
         <p>
-          Crypto moves fast. Take a moment to see what’s behind the project
-          before you take the next step.
+          A signature, an unsigned payload, or a public address. Three ways to
+          understand what happens on Solana.
         </p>
       </div>
       <div className="steps-grid">
@@ -27,7 +27,7 @@ export default function HowItWorks() {
           <div className="step-art input-art">
             <div className="mini-input">
               <Link2 size={15} />
-              <span>atlas.example</span>
+              <span>Solana signature…</span>
               <span className="mini-submit">
                 <ArrowUpRight size={16} />
               </span>
@@ -38,11 +38,11 @@ export default function HowItWorks() {
               fill="var(--blue)"
             />
           </div>
-          <div className="step-number">01 / START WITH A LINK</div>
-          <h3>Bring your curiosity.</h3>
+          <div className="step-number">01 / BRING A TRANSACTION</div>
+          <h3>Start with what you have.</h3>
           <p>
-            Start with a project website or contract address. See exactly which
-            project and contract the report is about.
+            Paste a transaction signature to explain the past, or an unsigned
+            payload to review a proposed action.
           </p>
         </article>
         <article className="step">
@@ -52,15 +52,15 @@ export default function HowItWorks() {
             <div className="research-core">
               <Search size={25} />
             </div>
-            <span className="orbit-tag tag-a">AUDIT.PDF</span>
-            <span className="orbit-tag tag-b">CONTRACT</span>
-            <span className="orbit-tag tag-c">NEWS</span>
+            <span className="orbit-tag tag-a">RPC FACTS</span>
+            <span className="orbit-tag tag-b">SIMULATION</span>
+            <span className="orbit-tag tag-c">WEB CONTEXT</span>
           </div>
           <div className="step-number">02 / FOLLOW THE TRAIL</div>
           <h3>Look beneath the surface.</h3>
           <p>
-            Trace published claims through audit reports, selected contract
-            facts, and recent security developments.
+            Decode supported instructions and simulate proposed actions.
+            TinyFish investigates exact token mints and program IDs.
           </p>
         </article>
         <article className="step">
@@ -68,11 +68,11 @@ export default function HowItWorks() {
             <div className="mini-sheet">
               <div>
                 <Check size={12} />
-                <span>Publication found</span>
+                <span>Transfer decoded</span>
               </div>
               <div>
                 <span className="mini-unknown">?</span>
-                <span>Coverage unverified</span>
+                <span>Identity unverified</span>
               </div>
               <div className="mini-sheet-footer">
                 OPEN THE EVIDENCE <ArrowUpRight size={11} />
@@ -82,8 +82,8 @@ export default function HowItWorks() {
           <div className="step-number">03 / MAKE SENSE OF IT</div>
           <h3>Leave with clarity.</h3>
           <p>
-            Understand what is supported, what conflicts, and what couldn’t be
-            established. Follow any finding to its source.
+            Read a headline and step-by-step detail. Inspect sources,
+            permissions, fees, and the parts that remain unknown.
           </p>
         </article>
       </div>

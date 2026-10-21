@@ -21,9 +21,8 @@ export default function WhyWeBuiltIt() {
           <span /> WHY WE BUILT IT
         </p>
         <h2 id="why-heading" className="why-statement">
-          Anyone can make a promise.{" "}
-          <br className="why-desktop-break" />
-          We help you find the <em>proof.</em>
+          A signature should be a decision. <br className="why-desktop-break" />
+          Not a leap into the <em>unknown.</em>
           <span className="why-outline">
             Less blind trust. More <em>eyes open.</em>
           </span>
@@ -31,8 +30,8 @@ export default function WhyWeBuiltIt() {
         <div className="why-footnote">
           <span className="why-rule" aria-hidden="true" />
           <p>
-            Because understanding what you’re trusting should come before
-            connecting your wallet.
+            Understand what a transaction does before you decide to approve it.
+            Your wallet remains in your hands.
           </p>
         </div>
       </div>

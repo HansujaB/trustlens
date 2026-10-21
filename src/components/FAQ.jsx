@@ -3,28 +3,28 @@ import { SectionLabel } from "./ui";
 
 const faqs = [
   [
-    "Does TrustLens tell me if a project is safe?",
-    "No. It is designed to show what the evidence supports, where claims conflict, and what remains unknown. A completed check is not a guarantee of safety, an investment recommendation, or a comprehensive security audit.",
+    "Does a successful simulation mean it is safe?",
+    "No. Simulation previews execution against a particular chain state. It does not establish intent or guarantee later effects. TrustLens will explain specific findings and uncertainties rather than certify safety.",
   ],
   [
     "Do I need to connect my wallet?",
-    "No. Checking public project information does not require wallet access, a seed phrase, or signing a transaction. This landing-page preview never connects to your wallet.",
+    "Not to explain a public signature or inspect a public address. Pre-signature review requires a serialized transaction from a compatible app; connecting a wallet alone cannot intercept another app’s pending transactions. This preview never connects to a wallet.",
   ],
   [
-    "Does it find smart-contract vulnerabilities?",
-    "The planned product performs selected contract checks and explains supported controls, such as recognized upgrade patterns. It does not provide comprehensive vulnerability detection or formal verification. Unsupported analysis is marked as unverified.",
+    "Which transactions will TrustLens understand?",
+    "The first release targets SOL and supported SPL Token transfers, fees, approvals, and account changes. Swap adapters come next. Unknown programs and unsupported extensions remain visible instead of being guessed.",
   ],
   [
     "What does TinyFish do?",
-    "TinyFish is the planned web research layer: it helps discover and navigate project documentation, audit publications, and recent developments. Separate blockchain reads inspect contract facts. This UI preview does not make paid TinyFish calls.",
+    "Search discovers sources; Fetch retrieves evidence about exact token mints, programs, and reported incidents. Web Agent is reserved for selected multi-step investigations. RPC and parsers establish transaction facts. This preview makes no TinyFish calls.",
   ],
   [
-    "How are news and community sentiment handled?",
-    "News and public discussion are kept separate from contract findings. Reports should show dates and sources, group repeated stories, and distinguish corroborated events from allegations. Positive sentiment is never treated as proof of safety.",
+    "Are amounts exact, and has accuracy been tested?",
+    "The plan preserves integer base units and exposes exact amounts. Market values and simulation outputs have their own uncertainty. No mainnet benchmark has been completed for this frontend preview.",
   ],
   [
-    "Can I investigate a real project here?",
-    "This is an interactive landing-page preview. You can explore the fictional Atlas Protocol report and the planned input flow. Live research, billing, and saved user reports are not connected yet.",
+    "Can I analyze, share, or download a video now?",
+    "Local input-format checks, illustrative reports, selectable definitions, a step-through explanation, and sample spam filtering work now. Live analysis, simulation, wallet pagination, direct report links, narrated videos, and MP4 downloads require the planned backend integrations.",
   ],
 ];
 

@@ -1,89 +1,450 @@
-import { useState } from "react";
-import { ArrowUpRight, Link2, LockKeyhole } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Braces,
+  CircleHelp,
+  FileSearch,
+  LockKeyhole,
+  Play,
+  ShieldCheck,
+  Wallet,
+  Waves,
+} from "lucide-react";
+import { validateInput } from "../lib/inputValidation";
 
-export default function InvestigationForm({ onPreview }) {
+const modes = [
+  {
+    id: "transaction",
+    name: "Explain a transaction",
+    icon: FileSearch,
+    label: "Solana transaction signature",
+    placeholder: "Paste a base58 transaction signature",
+    hint: "A transaction signature identifies an executed transaction. It is not a wallet address.",
+  },
+  {
+    id: "presign",
+    name: "Check before signing",
+    icon: ShieldCheck,
+    label: "Unsigned transaction · base64",
+    placeholder: "Paste a serialized unsigned transaction",
+    hint: "Connecting a wallet cannot reveal a pending transaction. Supply the payload from a compatible app. Never paste a recovery phrase or private key.",
+  },
+  {
+    id: "wallet",
+    name: "Explore a wallet",
+    icon: Wallet,
+    label: "Public Solana wallet address",
+    placeholder: "Paste a public wallet address",
+    hint: "Only public addresses. No wallet connection or signatures needed.",
+  },
+];
+const definitions = {
+  lamports:
+    "A lamport is one billionth of a SOL. Integer base units preserve exact amounts.",
+  delegate:
+    "A delegate is an account granted a specific token-spending allowance.",
+  simulation:
+    "A simulation previews a transaction against a particular chain state without broadcasting it. Later execution can differ.",
+};
+function Term({ name }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="glossary-term">
+      <button type="button" aria-expanded={open} onClick={() => setOpen(!open)}>
+        {name}
+      </button>
+      {open && (
+        <span className="term-definition" role="status">
+          {definitions[name]}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function SampleReport({ mode }) {
+  const [revealSpam, setRevealSpam] = useState(false);
+  const [step, setStep] = useState(0);
+  const steps = [
+    "The sender requests a 0.5 SOL transfer.",
+    "The System Program transfers 500,000,000 lamports to the recipient.",
+    "A separate 5,000-lamport fee makes the sender’s total decrease 0.500005 SOL.",
+  ];
+  return (
+    <section className="workspace-result" aria-labelledby="sample-title">
+      <div className="workspace-result-header">
+        <span className="paper-eyebrow">
+          ILLUSTRATIVE FIXTURE · NOT YOUR INPUT
+        </span>
+        <span className="sample-pill">NO LIVE CALLS</span>
+      </div>
+      <h3 id="sample-title">
+        {mode === "transaction"
+          ? "0.5 SOL sent. Every step explained."
+          : mode === "presign"
+            ? "Review required: a delegate can spend tokens."
+            : "Your activity, with room for the details."}
+      </h3>
+      <p className="result-intro">
+        {mode === "transaction" ? (
+          <>
+            This fictional transfer separates the asset movement from the
+            network fee, measured in <Term name="lamports" />.
+          </>
+        ) : mode === "presign" ? (
+          <>
+            This fictional payload grants a <Term name="delegate" /> an
+            allowance of 100 tokens. Its purpose is not established; this is not
+            proof of malicious behavior.
+          </>
+        ) : (
+          "A fictional wallet history demonstrates transaction grouping and reversible spam filtering."
+        )}
+      </p>
+      {mode === "wallet" ? (
+        <>
+          <label className="spam-toggle">
+            <input
+              type="checkbox"
+              checked={revealSpam}
+              onChange={(e) => setRevealSpam(e.target.checked)}
+            />{" "}
+            Show likely spam (1)
+          </label>
+          <div className="history-list">
+            <div>
+              <span>
+                01 · SOL transfer
+                <small>Illustrative successful transaction</small>
+              </span>
+              <strong>−0.5 SOL</strong>
+            </div>
+            <div>
+              <span>
+                02 · Token receipt<small>Illustrative incoming transfer</small>
+              </span>
+              <strong>+25 USDC</strong>
+            </div>
+            {revealSpam && (
+              <div>
+                <span>
+                  03 · Unsolicited token
+                  <small>
+                    Heuristic: unsolicited deposit with a promotional memo. Not
+                    proof of a scam.
+                  </small>
+                </span>
+                <strong>Likely spam</strong>
+              </div>
+            )}
+          </div>
+          <p className="sample-limit">
+            Sample history only. Live pagination will require the Solana RPC
+            integration.
+          </p>
+        </>
+      ) : (
+        <>
+          <div className="result-metrics">
+            <div>
+              <span>
+                {mode === "transaction" ? "Sent" : "Delegate allowance"}
+              </span>
+              <strong>
+                {mode === "transaction" ? "0.5 SOL" : "100 tokens"}
+              </strong>
+              <small>
+                {mode === "transaction"
+                  ? "Recipient receives 0.5 SOL"
+                  : "Example token · 6 decimals"}
+              </small>
+            </div>
+            <div>
+              <span>
+                {mode === "transaction" ? "Network fee" : "Simulation"}
+              </span>
+              <strong>
+                {mode === "transaction" ? "0.000005 SOL" : "Not run"}
+              </strong>
+              <small>
+                {mode === "transaction"
+                  ? "5,000 lamports · fixture value"
+                  : "Live RPC is not connected"}
+              </small>
+            </div>
+            <div>
+              <span>
+                {mode === "transaction" ? "Sender change" : "Web identity"}
+              </span>
+              <strong>
+                {mode === "transaction" ? "−0.500005 SOL" : "Unverified"}
+              </strong>
+              <small>
+                {mode === "transaction"
+                  ? "Transfer + fee"
+                  : "No source retrieved in this demo"}
+              </small>
+            </div>
+          </div>
+          {mode === "transaction" ? (
+            <div className="transaction-story">
+              <div
+                className="story-flow"
+                aria-label="Sender to System Program to recipient"
+              >
+                <span>Your wallet</span>
+                <ArrowRight size={16} />
+                <span>System Program</span>
+                <ArrowRight size={16} />
+                <span>Recipient</span>
+              </div>
+              <div className="story-controls">
+                <span className="paper-eyebrow">STEP {step + 1} / 3</span>
+                <button onClick={() => setStep((step + 1) % steps.length)}>
+                  <Play size={13} />{" "}
+                  {step === 2 ? "Restart explanation" : "Next step"}
+                </button>
+              </div>
+              <p aria-live="polite">{steps[step]}</p>
+              <small>
+                Step-through preview. Narration and MP4 export are planned.
+              </small>
+            </div>
+          ) : (
+            <div className="review-finding">
+              <ShieldCheck size={22} />
+              <div>
+                <strong>Inspect the requested permission</strong>
+                <p>
+                  An approval allows spending from a specific token account, up
+                  to the authorized amount. Check the delegate and whether that
+                  permission matches your intent. A successful{" "}
+                  <Term name="simulation" /> would not certify safety.
+                </p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      <div className="evidence-boundary">
+        <Braces size={18} />
+        <p>
+          <strong>Transaction facts</strong> come from decoding and RPC.{" "}
+          <strong>Web context</strong> comes from TinyFish sources. Neither this
+          fixture nor a successful simulation certifies safety.
+        </p>
+      </div>
+      <details className="workspace-details">
+        <summary>
+          <Waves size={16} /> TinyFish evidence · integration preview
+        </summary>
+        <p>
+          Live reports will show exact mint/program matches, source excerpts,
+          URLs, and retrieval times. This sample has no retrieved evidence.
+          Missing sources do not imply a scam.
+        </p>
+        <a href="https://docs.tinyfish.ai/" target="_blank" rel="noreferrer">
+          TinyFish documentation <ArrowUpRight size={13} />
+        </a>
+      </details>
+      <details className="workspace-details">
+        <summary>
+          <CircleHelp size={16} /> What is available in this preview?
+        </summary>
+        <p>
+          Input-format checks, sample reports, selectable definitions,
+          step-through explanations, and reversible sample spam filtering work
+          locally. Live RPC, simulation, research, historical prices, saved
+          share links, narration, and MP4 export are planned integrations.
+        </p>
+      </details>
+    </section>
+  );
+}
+
+export default function InvestigationForm() {
+  const [mode, setMode] = useState("transaction");
   const [value, setValue] = useState("");
+  const [cluster, setCluster] = useState("mainnet-beta");
   const [error, setError] = useState("");
-  function submit(event) {
-    event.preventDefault();
-    const input = value.trim();
-    let valid = /^0x[a-fA-F0-9]{40}$/.test(input);
-    try {
-      const url = new URL(input.includes("://") ? input : `https://${input}`);
-      valid ||=
-        ["https:", "http:"].includes(url.protocol) &&
-        url.hostname.includes(".") &&
-        !url.username &&
-        !url.password;
-    } catch {
-      /* Show inline validation below. */
-    }
-    if (!valid) {
-      setError(
-        "Enter a project website (such as example.com) or a 42-character EVM contract address.",
-      );
-      return;
-    }
+  const [notice, setNotice] = useState("");
+  const [sample, setSample] = useState(false);
+  const tabs = useRef([]);
+  const current = modes.find((item) => item.id === mode);
+  function choose(id) {
+    setMode(id);
+    setValue("");
     setError("");
-    onPreview(input);
+    setNotice("");
+    setSample(false);
+  }
+  function submit(e) {
+    e.preventDefault();
+    const result = validateInput(mode, value);
+    setError(result.error || "");
+    setSample(false);
+    setNotice(
+      result.error
+        ? ""
+        : `Input format checked locally for ${cluster}. ${mode === "presign" ? "Base64 is valid; transaction structure and signatures have not been decoded." : "Byte length is valid; chain existence has not been checked."} Live analysis is not connected. Nothing was uploaded, signed, simulated, or sent.`,
+    );
   }
   return (
-    <section className="investigate-section" id="investigate">
+    <section
+      className="workspace-section"
+      id="investigate"
+      aria-labelledby="workspace-title"
+    >
       <div className="container">
-        <div className="eyebrow">
-          <span className="live-dot" /> YOUR NEXT QUESTION STARTS HERE
+        <div className="workspace-heading">
+          <div>
+            <div className="eyebrow">
+              <span className="live-dot" /> THE TRUSTLENS WORKSPACE
+            </div>
+            <h2 id="workspace-title">
+              Less decoding. <em>More understanding.</em>
+            </h2>
+          </div>
+          <span className="preview-label">INTERACTIVE FRONTEND PREVIEW</span>
         </div>
-        <h2>
-          Big promises?
-          <br />
-          <em>Look a little closer.</em>
-        </h2>
-        <p>Start with a link. Follow the evidence.</p>
-        <form className="investigation-form" onSubmit={submit} noValidate>
-          <label className="sr-only" htmlFor="project-input">
-            Project website or contract address
-          </label>
-          <Link2 size={19} aria-hidden="true" />
-          <input
-            id="project-input"
-            value={value}
-            onChange={(event) => {
-              setValue(event.target.value);
-              setError("");
-            }}
-            placeholder="Project link or contract address"
-            autoComplete="off"
-            spellCheck="false"
-            aria-invalid={Boolean(error)}
-            aria-describedby={
-              error ? "input-error preview-note" : "preview-note"
-            }
-          />
-          <button type="submit">
-            Take a closer look <ArrowUpRight size={18} />
-          </button>
-        </form>
-        {error && (
-          <p className="input-error" id="input-error" role="alert">
-            {error}
-          </p>
-        )}
-        <div className="form-notes" id="preview-note">
-          <span>
-            <LockKeyhole size={12} /> No wallet required
-          </span>
-          <span>UI preview · Live checks coming later</span>
+        <div className="workspace-shell">
+          <div
+            className="workspace-tabs"
+            role="tablist"
+            aria-label="Investigation mode"
+          >
+            {modes.map((item, index) => (
+              <button
+                key={item.id}
+                ref={(el) => {
+                  tabs.current[index] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`workspace-tab-${item.id}`}
+                aria-selected={mode === item.id}
+                aria-controls="workspace-input-panel"
+                tabIndex={mode === item.id ? 0 : -1}
+                onClick={() => choose(item.id)}
+                onKeyDown={(e) => {
+                  let next;
+                  if (e.key === "ArrowRight") next = (index + 1) % modes.length;
+                  if (e.key === "ArrowLeft")
+                    next = (index + modes.length - 1) % modes.length;
+                  if (e.key === "Home") next = 0;
+                  if (e.key === "End") next = modes.length - 1;
+                  if (next !== undefined) {
+                    e.preventDefault();
+                    choose(modes[next].id);
+                    tabs.current[next]?.focus();
+                  }
+                }}
+              >
+                <item.icon size={17} />
+                {item.name}
+              </button>
+            ))}
+          </div>
+          <div
+            className="workspace-input"
+            id="workspace-input-panel"
+            role="tabpanel"
+            aria-labelledby={`workspace-tab-${mode}`}
+          >
+            <form onSubmit={submit} noValidate>
+              <div className="workspace-field-heading">
+                <label htmlFor="solana-input">{current.label}</label>
+                <label className="cluster-label">
+                  Cluster
+                  <select
+                    value={cluster}
+                    onChange={(e) => {
+                      setCluster(e.target.value);
+                      setNotice("");
+                    }}
+                  >
+                    <option value="mainnet-beta">Mainnet beta</option>
+                    <option value="devnet">Devnet</option>
+                  </select>
+                </label>
+              </div>
+              <textarea
+                id="solana-input"
+                rows={mode === "presign" ? 4 : 2}
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setError("");
+                  setNotice("");
+                  setSample(false);
+                }}
+                placeholder={current.placeholder}
+                autoComplete="off"
+                spellCheck="false"
+                maxLength={20000}
+                aria-invalid={Boolean(error)}
+                aria-describedby={`workspace-hint${error ? " workspace-error" : ""}`}
+              />
+              <p id="workspace-hint" className="workspace-hint">
+                {current.hint}
+              </p>
+              {mode === "presign" && (
+                <label className="intent-label">
+                  Your intended action (optional)
+                  <input
+                    placeholder="For example: swap up to 0.5 SOL for a specific token"
+                    maxLength={300}
+                  />
+                </label>
+              )}
+              {error && (
+                <p
+                  id="workspace-error"
+                  className="workspace-error"
+                  role="alert"
+                >
+                  {error}
+                </p>
+              )}
+              <div className="workspace-actions">
+                <button className="button button-blue" type="submit">
+                  Validate input format <ArrowRight size={16} />
+                </button>
+                <button
+                  type="button"
+                  className="button button-outline"
+                  onClick={() => {
+                    setError("");
+                    setNotice("");
+                    setSample(true);
+                  }}
+                >
+                  Explore{" "}
+                  {mode === "presign"
+                    ? "review"
+                    : mode === "wallet"
+                      ? "history"
+                      : "transfer"}{" "}
+                  sample <ArrowUpRight size={16} />
+                </button>
+                <span>
+                  <LockKeyhole size={13} /> No signing. No broadcasting.
+                </span>
+              </div>
+              <p className="workspace-hint">
+                Frontend preview: inputs stay in this page. RPC, TinyFish, and
+                wallet integrations are not connected.
+              </p>
+              {notice && (
+                <p className="workspace-notice" role="status">
+                  {notice}
+                </p>
+              )}
+            </form>
+            {sample && <SampleReport key={mode} mode={mode} />}
+          </div>
         </div>
-        <button
-          className="sample-shortcut"
-          onClick={() => {
-            setValue("atlas.example");
-            setError("");
-            onPreview("atlas.example");
-          }}
-        >
-          Just curious? Try the illustrative example <ArrowUpRight size={14} />
-        </button>
       </div>
     </section>
   );

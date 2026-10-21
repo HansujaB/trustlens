@@ -8,14 +8,14 @@ export default function Footer() {
         <div className="footer-top">
           <div>
             <Brand />
-            <p>A clearer view of what’s behind the claims.</p>
+            <p>Solana transactions. Human explanations.</p>
           </div>
           <nav aria-label="Footer navigation">
             <a href="#how-it-works">How it works</a>
             <a href="#evidence">
               Sample report <ArrowUpRight size={12} />
             </a>
-            <a href="#pricing">Pricing</a>
+            <a href="#capabilities">Capabilities</a>
             <a href="#faq">Questions</a>
           </nav>
           <a href="#top" className="back-top" aria-label="Back to top">
