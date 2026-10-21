@@ -8,7 +8,7 @@ const faqs = [
   ],
   [
     "Do I need to connect my wallet?",
-    "Not to explain a public signature or inspect a public address. Pre-signature review requires a serialized transaction from a compatible app; connecting a wallet alone cannot intercept another app’s pending transactions. This preview never connects to a wallet.",
+    "Guest analysis needs no wallet. Optional sign-in uses a login-message signature to save reports. Pre-signature review requires a serialized transaction from a compatible app; wallet connection alone cannot intercept another app’s pending transactions.",
   ],
   [
     "Which transactions will TrustLens understand?",
@@ -16,15 +16,15 @@ const faqs = [
   ],
   [
     "What does TinyFish do?",
-    "Search discovers sources; Fetch retrieves evidence about exact token mints, programs, and reported incidents. Web Agent is reserved for selected multi-step investigations. RPC and parsers establish transaction facts. This preview makes no TinyFish calls.",
+    "Search discovers sources; Fetch retrieves evidence about exact token mints and programs and supplies official sources for new glossary entries. Optional Web Agent supports scoped investigations. These features require configured TinyFish credentials; transaction facts come from RPC and decoding.",
   ],
   [
     "Are amounts exact, and has accuracy been tested?",
-    "The plan preserves integer base units and exposes exact amounts. Market values and simulation outputs have their own uncertainty. No mainnet benchmark has been completed for this frontend preview.",
+    "The backend preserves integer base units and exposes exact amounts. Historical USD comparisons are estimates. Automated fixture and API tests cover supported behavior; a broad mainnet accuracy benchmark has not been completed.",
   ],
   [
     "Can I analyze, share, or download a video now?",
-    "Local input-format checks, illustrative reports, selectable definitions, a step-through explanation, and sample spam filtering work now. Live analysis, simulation, wallet pagination, direct report links, narrated videos, and MP4 downloads require the planned backend integrations.",
+    "With the API running, you can analyze transactions, simulate unsigned payloads, browse wallet pages, and publish share links. Narrated MP4s require enabled rendering and TTS credentials. Missing providers are reported explicitly; samples remain separately labeled.",
   ],
 ];
 

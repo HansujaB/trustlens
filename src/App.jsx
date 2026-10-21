@@ -10,10 +10,13 @@ import FeatureRoadmap from "./components/FeatureRoadmap";
 import FAQ from "./components/FAQ";
 import InvestigationForm from "./components/InvestigationForm";
 import Footer from "./components/Footer";
+import { SharedReport } from "./components/LiveReport";
 
 export default function App() {
   const pageRef = useRef(null);
   useScrollMotion(pageRef);
+  const shared = location.pathname.match(/^\/share\/([a-f0-9]{48})$/);
+  if (shared) return <SharedReport id={shared[1]} />;
   return (
     <div ref={pageRef} className="landing-page">
       <div className="reading-progress" aria-hidden="true" />

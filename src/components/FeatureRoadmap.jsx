@@ -13,37 +13,37 @@ const features = [
     BookOpen,
     "Transaction explanations",
     "A concise headline, step-by-step transfers, exact base units, and selectable plain-English definitions.",
-    "PRIORITY BUILD",
+    "IMPLEMENTED",
   ],
   [
     ShieldCheck,
     "Review before signing",
     "Decode an unsigned payload, simulate it, and inspect specific permission and outflow findings.",
-    "PRIORITY BUILD",
+    "IMPLEMENTED",
   ],
   [
     Wallet,
     "Wallet history",
     "Paginated public activity with automatic, reversible filtering for likely spam and visible coverage limits.",
-    "NEXT",
+    "RPC COVERAGE",
   ],
   [
     ChartNoAxesCombined,
-    "Trade verification",
-    "Compare supported swaps with a dated historical benchmark and explain failures from available logs.",
-    "NEXT",
+    "Trade comparison",
+    "Estimate historical USD differences for supported token pairs, with source timestamps and explicit uncertainty.",
+    "PROVIDER REQUIRED",
   ],
   [
     Share2,
     "Shareable reports",
     "A direct, dated report link with facts, findings, source evidence, and a disclosure of what you share.",
-    "NEXT",
+    "IMPLEMENTED",
   ],
   [
     Film,
     "Narrated explainer videos",
     "An animated account of fund movements, narration, and MP4 download generated from the report’s facts.",
-    "EXPLORING",
+    "TTS REQUIRED",
   ],
 ];
 export default function FeatureRoadmap() {
@@ -58,8 +58,9 @@ export default function FeatureRoadmap() {
             to <em>the whole story.</em>
           </h2>
           <p>
-            The roadmap behind this frontend preview. Live transaction analysis
-            comes first; richer ways to explore follow.
+            One report connects on-chain facts, source evidence, and
+            plain-English explanations. Each integration shows its coverage and
+            availability.
           </p>
         </div>
         <div className="capabilities-grid">
@@ -75,7 +76,7 @@ export default function FeatureRoadmap() {
           ))}
         </div>
         <a className="text-link capability-link" href="#investigate">
-          Explore the interactive preview <ArrowUpRight size={16} />
+          Open the analysis workspace <ArrowUpRight size={16} />
         </a>
       </div>
     </section>

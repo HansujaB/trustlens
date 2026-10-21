@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -12,6 +12,8 @@ import {
   Waves,
 } from "lucide-react";
 import { validateInput } from "../lib/inputValidation";
+import LiveReport, { AccountControls } from "./LiveReport";
+import { api, waitForJob } from "../lib/api";
 
 const modes = [
   {
@@ -270,24 +272,93 @@ export default function InvestigationForm() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [sample, setSample] = useState(false);
+  const [report, setReport] = useState(null);
+  const [job, setJob] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [intentOwner, setIntentOwner] = useState("");
+  const [maxLamports, setMaxLamports] = useState("");
+  const controller = useRef();
+  useEffect(() => () => controller.current?.abort(), []);
   const tabs = useRef([]);
   const current = modes.find((item) => item.id === mode);
   function choose(id) {
+    if (busy) return;
     setMode(id);
     setValue("");
     setError("");
     setNotice("");
     setSample(false);
+    setReport(null);
+  }
+  async function analyze(input) {
+    setError("");
+    setReport(null);
+    setSample(false);
+    setBusy(true);
+    controller.current = new AbortController();
+    try {
+      const queued = await api(
+        "/analyses",
+        "POST",
+        input,
+        controller.current.signal,
+      );
+      setJob(queued);
+      const result = await waitForJob(
+        queued,
+        (j) => setNotice(`Analysis: ${j.stage}`),
+        controller.current.signal,
+      );
+      setReport(
+        await api(
+          `/reports/${result.reportId}`,
+          "GET",
+          undefined,
+          controller.current.signal,
+        ),
+      );
+      setNotice("Analysis complete.");
+    } catch (e) {
+      if (e.name !== "AbortError") setError(e.message);
+    } finally {
+      setBusy(false);
+      setJob(null);
+    }
+  }
+  async function loadReport(id, signature, sourceCluster) {
+    if (signature)
+      return analyze({
+        kind: "transaction",
+        signature,
+        cluster: sourceCluster,
+      });
+    try {
+      setReport(await api(`/reports/${id}`));
+      setSample(false);
+    } catch (e) {
+      setError(e.message);
+    }
   }
   function submit(e) {
     e.preventDefault();
     const result = validateInput(mode, value);
     setError(result.error || "");
     setSample(false);
-    setNotice(
-      result.error
-        ? ""
-        : `Input format checked locally for ${cluster}. ${mode === "presign" ? "Base64 is valid; transaction structure and signatures have not been decoded." : "Byte length is valid; chain existence has not been checked."} Live analysis is not connected. Nothing was uploaded, signed, simulated, or sent.`,
+    if (result.error) return;
+    analyze(
+      mode === "transaction"
+        ? { kind: mode, signature: value.trim(), cluster }
+        : mode === "wallet"
+          ? { kind: mode, address: value.trim(), cluster }
+          : {
+              kind: mode,
+              payload: value.trim(),
+              cluster,
+              intent: {
+                ...(intentOwner ? { owner: intentOwner.trim() } : {}),
+                ...(maxLamports ? { maxSolLamports: maxLamports.trim() } : {}),
+              },
+            },
     );
   }
   return (
@@ -306,7 +377,7 @@ export default function InvestigationForm() {
               Less decoding. <em>More understanding.</em>
             </h2>
           </div>
-          <span className="preview-label">INTERACTIVE FRONTEND PREVIEW</span>
+          <span className="preview-label">SOLANA ANALYSIS WORKSPACE</span>
         </div>
         <div className="workspace-shell">
           <div
@@ -321,6 +392,7 @@ export default function InvestigationForm() {
                   tabs.current[index] = el;
                 }}
                 type="button"
+                disabled={busy}
                 role="tab"
                 id={`workspace-tab-${item.id}`}
                 aria-selected={mode === item.id}
@@ -352,12 +424,14 @@ export default function InvestigationForm() {
             role="tabpanel"
             aria-labelledby={`workspace-tab-${mode}`}
           >
+            <AccountControls onLoad={loadReport} />
             <form onSubmit={submit} noValidate>
               <div className="workspace-field-heading">
                 <label htmlFor="solana-input">{current.label}</label>
                 <label className="cluster-label">
                   Cluster
                   <select
+                    disabled={busy}
                     value={cluster}
                     onChange={(e) => {
                       setCluster(e.target.value);
@@ -370,6 +444,7 @@ export default function InvestigationForm() {
                 </label>
               </div>
               <textarea
+                disabled={busy}
                 id="solana-input"
                 rows={mode === "presign" ? 4 : 2}
                 value={value}
@@ -391,10 +466,19 @@ export default function InvestigationForm() {
               </p>
               {mode === "presign" && (
                 <label className="intent-label">
-                  Your intended action (optional)
+                  Optional intent check · direct SOL transfers only
                   <input
-                    placeholder="For example: swap up to 0.5 SOL for a specific token"
-                    maxLength={300}
+                    placeholder="Your public wallet address"
+                    value={intentOwner}
+                    onChange={(e) => setIntentOwner(e.target.value)}
+                    maxLength={44}
+                  />
+                  <input
+                    placeholder="Maximum transfer in lamports (1 SOL = 1000000000)"
+                    value={maxLamports}
+                    onChange={(e) => setMaxLamports(e.target.value)}
+                    inputMode="numeric"
+                    maxLength={20}
                   />
                 </label>
               )}
@@ -408,11 +492,17 @@ export default function InvestigationForm() {
                 </p>
               )}
               <div className="workspace-actions">
-                <button className="button button-blue" type="submit">
-                  Validate input format <ArrowRight size={16} />
+                <button
+                  disabled={busy}
+                  className="button button-blue"
+                  type="submit"
+                >
+                  {busy ? "Analyzing…" : "Analyze with TrustLens"}{" "}
+                  <ArrowRight size={16} />
                 </button>
                 <button
                   type="button"
+                  disabled={busy}
                   className="button button-outline"
                   onClick={() => {
                     setError("");
@@ -429,20 +519,55 @@ export default function InvestigationForm() {
                   sample <ArrowUpRight size={16} />
                 </button>
                 <span>
-                  <LockKeyhole size={13} /> No signing. No broadcasting.
+                  <LockKeyhole size={13} /> No transaction signing or
+                  broadcasting.
                 </span>
               </div>
               <p className="workspace-hint">
-                Frontend preview: inputs stay in this page. RPC, TinyFish, and
-                wallet integrations are not connected.
+                Analysis sends the signature, public address, or unsigned
+                payload to the backend and its RPC provider. TinyFish receives
+                selected public identifiers. Reports start private to your
+                session.
               </p>
               {notice && (
                 <p className="workspace-notice" role="status">
                   {notice}
                 </p>
               )}
+              {job && (
+                <button
+                  type="button"
+                  className="button button-outline"
+                  onClick={async () => {
+                    try {
+                      await api(`/jobs/${job.id}`, "DELETE");
+                      controller.current?.abort();
+                      setNotice("Analysis cancelled.");
+                    } catch (e) {
+                      setError(e.message);
+                    }
+                  }}
+                >
+                  Cancel analysis
+                </button>
+              )}
             </form>
             {sample && <SampleReport key={mode} mode={mode} />}
+            {report && !sample && (
+              <LiveReport
+                key={report.id}
+                report={report}
+                onLoad={loadReport}
+                onNextPage={(h) =>
+                  analyze({
+                    kind: "wallet",
+                    address: h.address,
+                    cluster: h.cluster,
+                    before: h.nextCursor,
+                  })
+                }
+              />
+            )}
           </div>
         </div>
       </div>

@@ -3114,3 +3114,56 @@ p {
     transform: rotate(-3deg);
   }
 }
+/* Live backend report surfaces */
+.live-report {
+  overflow-wrap: anywhere;
+}
+.live-report pre {
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 12px;
+  padding: 16px;
+  background: #f4f6fb;
+}
+.live-report blockquote {
+  margin: 16px 0;
+  padding: 16px;
+  border-left: 3px solid #315ed8;
+  background: #f4f6fb;
+}
+.live-steps {
+  padding-left: 24px;
+  line-height: 1.8;
+}
+.live-steps li {
+  margin-bottom: 10px;
+}
+.account-controls {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #e0e5ef;
+}
+.account-controls p {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.account-controls small,
+.term-definition small {
+  display: block;
+  margin-top: 8px;
+}
+.recent-report {
+  display: block;
+  text-align: left;
+  padding: 10px;
+  margin-top: 8px;
+  background: #f4f6fb;
+  border: 1px solid #e0e5ef;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

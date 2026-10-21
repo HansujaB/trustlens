@@ -1,4 +1,5 @@
 # TrustLens — Solana transaction intelligence
+
 **Track:** Web3 · **Primary chain:** Solana  
 **Product:** Transaction explainer, investigator, and pre-signature risk review.  
 **Brand:** TrustLens
@@ -11,7 +12,7 @@ Build one shared transaction-analysis engine with three entry points: an execute
 
 Solana RPC establishes transaction facts. Simulation estimates execution against a specific state. TinyFish investigates public sources. An explanation service makes this understandable without changing or inventing the underlying facts.
 
-The app is read-only. It never asks for seed phrases, signs messages, approves transactions, or broadcasts transactions. It is a review tool, not a universal scam detector, audit, or investment recommendation.
+The analysis engine is read-only. It never asks for seed phrases, signs transactions, approves spending, or broadcasts transactions. Optional account login asks the user's wallet to sign a clearly separated authentication message. It is a review tool, not a universal scam detector, audit, or investment recommendation.
 
 ## 2. Users and concrete journeys
 
@@ -23,21 +24,21 @@ Do not imply that connecting a wallet intercepts another dApp's transaction. The
 
 ## 3. Current repository versus intended product
 
-The repository remains a React/Vite frontend. Preserve the established blue/white editorial design and TrustLens identity; there is no need to migrate to Next.js just for the hackathon.
+The repository contains the React/Vite frontend and a Node 24 ES-module backend with schema validation, SQLite storage, a bounded job queue, provider adapters, and a Remotion rendering worker. Preserve the established blue/white editorial design and TrustLens identity.
 
-| Capability                       | Current frontend                                      | Backend delivery required                                             |
-| -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- |
-| Three investigation modes        | Working mode selection and local format validation    | RPC retrieval and transaction deserialization                         |
-| Plain-English explanation        | Explicitly fictional transfer report and step-through | Explanation generated from normalized real data                       |
-| Selectable technical definitions | Working underlined glossary terms                     | Extend vocabulary as adapters expand                                  |
-| Pre-signature review             | Payload form and fictional permission finding         | Decode, simulate, evaluate rules, bind report to payload              |
-| Wallet history                   | Fictional history and reversible spam filter          | Paginated RPC history and coverage tracking                           |
-| TinyFish evidence                | Integration explanation and example source structure  | Actual Search/Fetch calls, excerpts, timestamps, exact-ID correlation |
-| Trade verification               | Roadmap                                               | Supported swap adapter plus historical benchmark                      |
-| Sharing                          | Roadmap                                               | Persistent, explicitly published report URLs                          |
-| Video and MP4                    | Roadmap; step-through is not a rendered video         | Render queue, narration, playback and MP4 export                      |
+| Capability                       | Current frontend                                    | Backend delivery required                                             |
+| -------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+| Three investigation modes        | Submits live jobs and polls real stages             | Implemented: RPC retrieval and legacy/v0 deserialization              |
+| Plain-English explanation        | Real reports plus separately labeled samples        | Deterministic explanations from normalized facts                      |
+| Selectable technical definitions | API-backed glossary popovers                        | 30 curated terms, aliases, cited generation, caching and admin review |
+| Pre-signature review             | Unsigned payload and structured SOL intent controls | Decode, lookup resolution, simulation, digest, findings               |
+| Wallet history                   | Live pages and reversible likely-spam filter        | Address-reference pagination; complete wallet indexing remains future |
+| TinyFish evidence                | Exact-ID excerpts, URLs and timestamps              | Search/Fetch, cache, optional agent; credentials required             |
+| Trade comparison                 | Explicit estimated/unsupported/unavailable states   | Conservative Jupiter two-token candidate, SOL/USDC historical mapping |
+| Sharing                          | Explicit publish action and standalone share page   | Private report storage, immutable snapshots and revocation            |
+| Video and MP4                    | Queued generation and download                      | Remotion + WAV TTS adapter; credentials and browser required          |
 
-Never display an arbitrary submitted input with fictional findings as though it was analyzed. The frontend labels sample reports separately, does not upload inputs, and does not simulate fake provider progress. Removed pricing is not replaced with unvalidated commercial claims.
+Never display an arbitrary submitted input with fictional findings as though it was analyzed. Samples are separate. Live analysis uploads inputs to the backend/RPC; selected public mint/program identifiers go to TinyFish. Provider failures remain visible. Removed pricing is not replaced with unvalidated commercial claims.
 
 ## 4. Scope and priorities
 
@@ -71,7 +72,7 @@ Videos are part of the intended product, not silently discarded. Deliver them af
 
 ```mermaid
 flowchart TD
-  UI[React frontend: signature / unsigned payload / wallet] --> API[TypeScript API: validate and rate-limit]
+  UI[React frontend: signature / unsigned payload / wallet] --> API[Node API: validate and rate-limit]
   API --> FETCH[Solana RPC fetcher + paginated history]
   API --> DECODE[Transaction decoder + lookup resolution]
   FETCH --> MODEL[Normalized transaction facts]
@@ -92,7 +93,7 @@ flowchart TD
   VIDEO --> UI
 ```
 
-Suggested additions: TypeScript backend using Fastify or equivalent, a maintained Solana library selected after a compatibility smoke test, schema validation, SQLite for the prototype, PostgreSQL for a hosted multi-instance deployment, and a bounded job queue. Use an archival-capable RPC provider for history. Do not assume the public RPC supports production traffic or complete historical coverage.
+Implemented stack: Node 24 HTTP API in JavaScript ES modules, Zod request schemas, Solana web3.js 3.1.1, lossless RPC JSON parsing, SQLite, and a bounded in-process queue. This matches the repository's JavaScript tooling. PostgreSQL and an external queue are migration options for multi-instance hosting. Use an archival-capable RPC provider for history; public RPC does not promise production throughput or complete coverage.
 
 Modules: `transaction_fetcher`, `transaction_parser`, `simulation_service`, `risk_rules`, `tinyfish_client`, `evidence_correlator`, `explanation_service`, `report_service`, `wallet_history`, `market_comparison`, and `video_service`. These can be modules in one service, not separate microservices. Video runs separately because rendering is expensive.
 
@@ -211,7 +212,7 @@ Critical checks:
 - Exact raw balances/fees match preserved RPC fixtures without floating-point truncation.
 - Failed instructions are not narrated as executed transfers.
 - Unknown instructions never disappear or become reassuring invented labels.
-- No code path signs or broadcasts; verify provider calls in integration tests.
+- No transaction-signing or broadcast path; login-message signing is explicitly separate. Verify allowed RPC calls in tests.
 - Stale blockhash, unresolved lookup tables, RPC timeout, and changed payload invalidate or limit review appropriately.
 - Web timeout, spoofed names, contradictory sources, and prompt-injected pages cannot change chain facts.
 - Historical benchmark timestamp/units are disclosed; absent prices yield unavailable.
@@ -241,7 +242,7 @@ Then submit a prepared, inspected unsigned devnet payload with a controlled dele
 
 Launch a small read-only beta to Solana users and support/community teams. Measure whether users correctly identify outflows, permissions, and uncertainty; whether they reopen/share reports; unsupported coverage; actual investigation costs; and false-positive warnings. Keep public report access affordable or limited free, and consider paid investigation quotas only after measuring repeat demand and cost. No pay-to-improve verdicts.
 
-**Definition of done for P0:** TrustLens explains a real supported Solana transaction, performs a real non-broadcast unsigned simulation, and enriches an investigation with traceable TinyFish Search/Fetch evidence. The current frontend alone does not meet that definition.
+**Definition of done for P0:** TrustLens explains a real supported Solana transaction, performs a real non-broadcast unsigned simulation, and enriches an investigation with traceable TinyFish Search/Fetch evidence. The backend paths exist; passing mocked-provider tests does not substitute for live configured-provider acceptance.
 
 ## 15. Primary references
 
@@ -252,6 +253,8 @@ Launch a small read-only beta to Solana users and support/community teams. Measu
 - [TinyFish cookbook](https://github.com/tinyfish-io/tinyfish-cookbook): implementation reference supplied in the brief; inspect exact examples when wiring the integration.
 
 Technical design choices above are implementation requirements, not a claim that the current frontend already implements the services.
+
+The implementation/status sections in this document and README supersede earlier roadmap language. Provider-backed features require environment configuration and live acceptance checks; shipped adapter code is not evidence of a tested paid-provider integration.
 
 ## 16. Glossary, accounts, customer journey, and business model
 
@@ -285,3 +288,29 @@ Pre-signature paste/upload is an advanced fallback. The mainstream path requires
 Consumer access builds reach; developer and support integrations are a potential recurring revenue channel. Free access covers bounded basic explanations and glossary. A future Plus tier can fund deeper research, video exports, and higher quotas. Teams/API can offer shared cases, embedded explanations, and usage reporting. Prices and willingness to pay are unvalidated; no payment processing is part of this backend request.
 
 Measure RPC, TinyFish, LLM, narration, rendering, storage, and failure costs per completed report. Cache public evidence and reusable definitions, while applying private-report access checks separately. Enforce server-side quotas and expose usage; never hide an already-detected warning behind a paywall. Seed ten beginner users and a few support teams, then measure comprehension, repeat use, useful shared reports, and false or misleading warnings. Do not claim universal scam detection or the unverified 289-transaction benchmark.
+
+## 17. Backend implementation and verification checkpoint
+
+Implemented in this repository:
+
+- Node HTTP API, strict Zod inputs, same-origin/CSRF writes, private guest sessions, wallet-message authentication, ownership checks, daily quotas and a bounded queue.
+- Lossless Solana RPC retrieval, supported instruction decoder, legacy/v0 unsigned payload review, lookup resolution, non-broadcast simulation with inner-instruction observations, deterministic findings and explanations.
+- Address-reference wallet pagination, reversible likely-spam flags, current token-account discovery, failure explanation, conservative historical trade-value comparison.
+- TinyFish Search/Fetch adapters and source cache; optional scoped agent escalation. Official-source glossary generation with cited excerpts, unreviewed status, reuse, and operator approval/retirement.
+- Private SQLite report storage, saved reports, immutable share snapshots and revocation, watchlist/preferences endpoints.
+- Remotion scene builder, WAV TTS integration, captioned animation, one-renderer concurrency, authenticated MP4 streaming/download, transcript metadata.
+- Connected frontend for real jobs/reports, optional sign-in, glossary, sharing and video requests. Samples stay distinct.
+
+Verification on 2026-10-22: production frontend build passed; 15 automated tests passed. Live public RPC retrieved a mainnet transaction and returned exact fee data. A fresh unfunded devnet payload was simulated without signatures or broadcasting and failed with AccountNotFound, as expected. The actual Remotion pipeline rendered a 4.5-second MP4 (254,496 bytes) using synthetic silent WAV fixtures. This proves the render path, not live spoken narration. TinyFish, LLM, CoinGecko Pro and TTS acceptance remain pending credentials. No 289-transaction or comprehensive accuracy benchmark exists.
+
+### Honest scope and remaining launch work
+
+The historical comparison recognizes a narrow two-token net-change candidate in Jupiter activity; it does not fully decode arbitrary Jupiter routes or certify trade fairness. Supported mapped benchmark assets are wrapped SOL and USDC, mainnet only, with a sample no more than five minutes from execution. All other cases remain unsupported/unavailable. Wallet history is provider/address scoped, not an exhaustive wallet index. Token-2022 extensions and durable nonce payloads remain unsupported. Videos have scene/duration limits. The browser-wallet sign-in UI is implemented; cryptographic behavior is fixture-tested, but a real wallet-extension acceptance test is still required.
+
+Launch needs configured providers, archival RPC capacity, paid-provider contract tests, a deliberately chosen data-retention policy/cleanup worker, ingress-aware rate limiting, deployment backups and an operational security review. The current local queue marks interrupted jobs failed on restart. It is not a durable distributed queue. Watchlists are saved addresses; scheduled alerts, billing, B2B keys, and universal wallet interception are not included in this release.
+
+### Recommended hosted architecture
+
+For a public deployment, move records and quotas to Neon Postgres with migrations and an asynchronous store. Prefer explicit tables for accounts/sessions/challenges, reports, jobs, research evidence, glossary versions, shares, watchlists, preferences and usage. Use pooled connections for application traffic and a direct connection for migrations, following the chosen driver requirements. This is a planned migration, not implemented merely by adding DATABASE_URL.
+
+Store media in private object storage and issue short-lived authorized download URLs. Run Chromium/TTS rendering in a separate long-running worker. Add a durable job queue before horizontal scaling. A one-process Node deployment with a persistent volume can use SQLite for the initial demonstration, but an ephemeral/serverless filesystem cannot preserve the current database or media reliably.

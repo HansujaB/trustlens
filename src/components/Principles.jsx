@@ -33,8 +33,9 @@ export default function Principles() {
           <div>
             <h3>The web, with a paper trail.</h3>
             <p>
-              Planned TinyFish Search and Fetch investigate exact mints and
-              program IDs. Web Agent handles selected multi-step questions.
+              TinyFish Search and Fetch investigate exact mints and program IDs
+              when configured. Optional Web Agent supports scoped follow-up
+              questions.
             </p>
             <span className="technology-note">
               <Waves size={13} /> WEB RESEARCH WITH TINYFISH

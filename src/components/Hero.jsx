@@ -128,7 +128,7 @@ export default function Hero() {
           </div>
           <div className="hero-assurances">
             <span>
-              <LockKeyhole size={13} /> No signing or sending
+              <LockKeyhole size={13} /> No transaction signing or sending
             </span>
             <span>
               <Link2 size={13} /> Facts and context, separated

@@ -6,12 +6,17 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "server": "node --watch server/index.js",
+    "start": "node server/index.js",
+    "test": "node --test src/lib/*.test.js server/tests/*.test.js",
+    "test:video": "node server/scripts/video-smoke.js",
+    "test:live": "node server/scripts/live-smoke.js"
   },
   "dependencies": {
     "@remotion/bundler": "^4.0.537",
     "@remotion/renderer": "^4.0.537",
-    "@solana/web3.js": "1.98.4",
+    "@solana/web3.js": "3.1.1",
     "bs58": "^6.0.0",
     "lossless-json": "^4.3.3",
     "lucide-react": "^0.468.0",
@@ -24,5 +29,8 @@
     "@vitejs/plugin-react": "^4.3.4",
     "prettier": "^3.9.10",
     "vite": "^6.1.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }
