@@ -6,13 +6,21 @@ import HowItWorks from "./components/HowItWorks";
 import EvidenceExplorer from "./components/EvidenceExplorer";
 import Principles from "./components/Principles";
 import WhyWeBuiltIt from "./components/WhyWeBuiltIt";
-import FeatureRoadmap from "./components/FeatureRoadmap";
 import FAQ from "./components/FAQ";
 import InvestigationForm from "./components/InvestigationForm";
 import Footer from "./components/Footer";
 import { SharedReport } from "./components/LiveReport";
+import { WalletAuthProvider } from "./lib/WalletAuth";
 
 export default function App() {
+  return (
+    <WalletAuthProvider>
+      <Page />
+    </WalletAuthProvider>
+  );
+}
+
+function Page() {
   const pageRef = useRef(null);
   useScrollMotion(pageRef);
   const shared = location.pathname.match(/^\/share\/([a-f0-9]{48})$/);
@@ -32,7 +40,6 @@ export default function App() {
         <EvidenceExplorer />
         <WhyWeBuiltIt />
         <Principles />
-        <FeatureRoadmap />
         <FAQ />
       </main>
       <Footer />

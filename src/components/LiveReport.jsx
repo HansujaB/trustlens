@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import bs58 from "bs58";
-import { api, getSession, waitForJob } from "../lib/api";
+import { useWalletAuth } from "../lib/WalletAuth";
+import { api, waitForJob } from "../lib/api";
 
 export function GlossaryTerm({ name }) {
   const [open, setOpen] = useState(false),
@@ -41,41 +41,12 @@ export function GlossaryTerm({ name }) {
 }
 
 export function AccountControls({ onLoad }) {
-  const [wallet, setWallet] = useState(null),
-    [error, setError] = useState(""),
-    [reports, setReports] = useState([]),
-    [busy, setBusy] = useState(false);
+  const { wallet, busy, error: authError, login, logout } = useWalletAuth();
+  const [error, setError] = useState("");
+  const [reports, setReports] = useState([]);
   useEffect(() => {
-    getSession()
-      .then((s) => setWallet(s.wallet))
-      .catch(() => {});
-  }, []);
-  async function login() {
-    setBusy(true);
-    setError("");
-    try {
-      const provider = window.phantom?.solana || window.solana;
-      if (!provider?.connect || !provider?.signMessage)
-        throw new Error(
-          "Install a compatible Solana wallet with message-signing support. Guest analysis needs no wallet.",
-        );
-      const connected = await provider.connect();
-      const address = connected.publicKey.toString();
-      const challenge = await api("/auth/challenge", "POST", { address });
-      const signed = await provider.signMessage(
-        new TextEncoder().encode(challenge.message),
-        "utf8",
-      );
-      const session = await api("/auth/verify", "POST", {
-        signature: bs58.encode(signed.signature),
-      });
-      setWallet(session.wallet);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setBusy(false);
-    }
-  }
+    setReports([]);
+  }, [wallet]);
   async function recent() {
     try {
       setReports((await api("/reports")).reports);
@@ -94,15 +65,8 @@ export function AccountControls({ onLoad }) {
         {wallet ? (
           <button
             className="button button-outline"
-            onClick={async () => {
-              try {
-                await api("/auth/logout", "POST");
-                setWallet(null);
-                setReports([]);
-              } catch (e) {
-                setError(e.message);
-              }
-            }}
+            disabled={busy}
+            onClick={logout}
           >
             Sign out
           </button>
@@ -125,7 +89,7 @@ export function AccountControls({ onLoad }) {
           transaction or token spending.
         </small>
       )}
-      {error && <p role="alert">{error}</p>}
+      {(error || authError) && <p role="alert">{error || authError}</p>}
       {reports.map((r) => (
         <button
           key={r.id}

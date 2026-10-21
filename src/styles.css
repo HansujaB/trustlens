@@ -730,6 +730,52 @@ p {
   border-color: var(--blue);
   color: var(--blue);
 }
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-sign-in {
+  background: var(--blue);
+  color: white;
+  border: 1px solid var(--blue);
+  border-radius: 4px;
+  padding: 11px 16px;
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.nav-sign-in:hover {
+  background: #183ab5;
+}
+.nav-auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  color: #873c24;
+}
+.nav-auth-error button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+}
+@media (max-width: 400px) {
+  .nav-wrap {
+    gap: 8px;
+  }
+  .nav-actions {
+    gap: 4px;
+  }
+  .nav-sign-in {
+    padding: 9px 12px;
+  }
+}
 .menu-toggle {
   display: none;
   background: none;

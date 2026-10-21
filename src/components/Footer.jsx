@@ -15,7 +15,7 @@ export default function Footer() {
             <a href="#evidence">
               Sample report <ArrowUpRight size={12} />
             </a>
-            <a href="#capabilities">Capabilities</a>
+            <a href="#investigate">Workspace</a>
             <a href="#faq">Questions</a>
           </nav>
           <a href="#top" className="back-top" aria-label="Back to top">
