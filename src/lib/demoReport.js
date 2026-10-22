@@ -5,7 +5,7 @@
  */
 
 export const DEMO_SHARE_ID =
-  "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+  "2371b3a3e23e1a83ade5fd4fd4eaeb968dff67a22776efa0";
 
 export const DEMO_SIG = "5nP5QNB2W7butQry6BjutpcQap35rAuvbKKs41mjnqBQt3H9iqMYr9Q4zJHDNPUgGFZXngFe1P3cG5aChDik23FP";
 
