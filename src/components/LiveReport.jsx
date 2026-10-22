@@ -268,11 +268,21 @@ export default function LiveReport({
         <>
           <p>
             Cluster: {report.facts.cluster} · Status: {report.facts.status} ·
-            Fee: {formatRaw(report.facts.feeLamports, 9)} SOL (
-            {report.facts.feeLamports} lamports) paid by{" "}
-            {shortAddr(report.facts.feePayer)} · Decoded{" "}
-            {report.facts.coverage.supported}/{report.facts.coverage.total}{" "}
-            instructions.
+            Fee:{" "}
+            {report.facts.feeLamports !== undefined ? (
+              <>
+                {formatRaw(report.facts.feeLamports, 9)} SOL (
+                {report.facts.feeLamports} lamports) paid by{" "}
+                {shortAddr(report.facts.feePayer)}
+              </>
+            ) : (
+              <>
+                estimate unavailable before execution · Fee payer{" "}
+                {shortAddr(report.facts.feePayer)}
+              </>
+            )}{" "}
+            · Decoded {report.facts.coverage.supported}/
+            {report.facts.coverage.total} instructions.
           </p>
           <details className="workspace-details" open>
             <summary>
