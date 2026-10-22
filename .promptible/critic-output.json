@@ -1,0 +1,27 @@
+{
+  "critic": "independent",
+  "referenceId": "openmontage-claude-pipeline",
+  "verdict": "reject",
+  "scores": {
+    "research_fidelity": 8,
+    "reference_fidelity": 6,
+    "concept_specificity": 8,
+    "product_authenticity": 9,
+    "mobile_readability": 8,
+    "composition": 6,
+    "motion_causality": 6,
+    "material_restraint": 9
+  },
+  "hardFailures": [],
+  "notes": [
+    "Credits visible fixes vs v1: eyebrows now product-format TRUSTLENS · STAGE · KIND (INPUT·SIGNATURE, DECODE·SWAP, EVIDENCE·SOURCES, ESTIMATE·TRADE, VERDICT·SHARE); CONCEPT PREVIEW tag pinned to bottom corner of every panel; causal thread widened as blue vertical connector with stage nodes across panel tops.",
+    "research_fidelity 8: authentic TrustLens surface, exact fixture numbers verbatim (2.4 SOL → 312.86 USDC via Jupiter, −0.34% estimate, 5000-lamport fee, Jupiter Swap API / Solana Token Program evidence) matching trustlens-report.png; nothing invented.",
+    "reference_fidelity 6: deviates from openmontage-claude-pipeline camera grammar. Reference = one connected world, single large readable foreground surface, context panels recede to edges, thin red thread travels stage to stage, hero payoff at end of causal path, holds during work. Candidate = 5 equal side-by-side panels all visible simultaneously; no foreground/background hierarchy, no hero payoff panel, no evident travel bridging stages.",
+    "composition 6: equal panel sizes (~1/5 frame each) weaken hierarchy; no dominant focal payoff; no receding context panels; busy landscape frame with no clear end-state anchor.",
+    "motion_causality 6: stage nodes suggest sequence but static sheet shows all 5 stages populated at once; sequential travel bridging stages is not visible from evidence; cannot confirm camera follows causality input → work → output as required.",
+    "material_restraint 9: flat blue/white editorial (#f5f7ff bg, #122145 ink, #315ed8 blue), thin rules, small mono labels; zero neon/glow/gradient/glassmorphism — consistent with brief and reference.",
+    "No hard failures triggered: authentic surface used, exact numbers from fixture, no invented metrics/claims/logos, no neon/glow, no receipt/card-grid fallback.",
+    "Fails pass threshold: average 7.5 (< 8.5) and reference_fidelity/composition/motion_causality all < 8.",
+    "Destination is 1080p landscape in-app player; text is readable at that scale, so readability is not the blocker — the blocker is reference-mechanism fidelity and compositional hierarchy."
+  ]
+}
