@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useWalletAuth } from "../lib/WalletAuth";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { api, waitForJob } from "../lib/api";
 import { Brand } from "./ui";
 import { DEMO_SHARE_ID, buildDemoReport, demoShareUrl, isDemoMode } from "../lib/demoReport";
