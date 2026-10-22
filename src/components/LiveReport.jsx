@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useWalletAuth } from "../lib/WalletAuth";
 import { api, waitForJob } from "../lib/api";
+import { DEMO_SHARE_ID, buildDemoReport, demoShareUrl, isDemoMode } from "../lib/demoReport";
 
 export function shortAddr(value) {
   const s = String(value || "");
@@ -177,6 +178,10 @@ export default function LiveReport({
     setMessage("");
     try {
       if (kind === "share") {
+        if (report.demo) {
+          setLink(demoShareUrl());
+          return;
+        }
         const result = await api(`/reports/${report.id}/share`, "POST", {
           publish: true,
         });
@@ -209,8 +214,12 @@ export default function LiveReport({
       aria-label="Live analysis report"
     >
       <span className="paper-eyebrow">
-        {publicView ? "SHARED SNAPSHOT" : "LIVE REPORT"} ·{" "}
-        {new Date(report.createdAt).toLocaleString()}
+        {report.demo
+          ? "SCRIPTED CONCEPT PREVIEW · ILLUSTRATIVE DATA"
+          : publicView
+            ? "SHARED SNAPSHOT"
+            : "LIVE REPORT"}{" "}
+        · {new Date(report.createdAt).toLocaleString()}
       </span>
       <h3>{report.explanation?.headline || "Wallet activity"}</h3>
       {report.kind === "wallet" ? (
@@ -480,6 +489,10 @@ export function SharedReport({ id }) {
   const [report, setReport] = useState(null),
     [error, setError] = useState("");
   useEffect(() => {
+    if (isDemoMode() && id === DEMO_SHARE_ID) {
+      setReport(buildDemoReport());
+      return;
+    }
     const controller = new AbortController();
     fetch(`/api/shares/${id}`, { signal: controller.signal })
       .then(async (r) => {

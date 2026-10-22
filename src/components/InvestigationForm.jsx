@@ -14,6 +14,7 @@ import {
 import { validateInput } from "../lib/inputValidation";
 import LiveReport, { AccountControls } from "./LiveReport";
 import { api, waitForJob } from "../lib/api";
+import { buildDemoReport, isDemoMode } from "../lib/demoReport";
 
 const modes = [
   {
@@ -297,6 +298,33 @@ export default function InvestigationForm() {
     setBusy(true);
     controller.current = new AbortController();
     try {
+      if (isDemoMode()) {
+        const stages = [
+          "queued",
+          "fetching transaction",
+          "decoding instructions",
+          "researching identifiers",
+          "complete",
+        ];
+        for (const stage of stages) {
+          controller.current.signal.throwIfAborted();
+          setNotice(`Analysis: ${stage}`);
+          await new Promise((resolve, reject) => {
+            const timer = setTimeout(resolve, 550);
+            controller.current.signal.addEventListener(
+              "abort",
+              () => {
+                clearTimeout(timer);
+                reject(new DOMException("Aborted", "AbortError"));
+              },
+              { once: true },
+            );
+          });
+        }
+        setReport(buildDemoReport(input));
+        setNotice("Analysis complete.");
+        return;
+      }
       const queued = await api(
         "/analyses",
         "POST",
@@ -378,6 +406,9 @@ export default function InvestigationForm() {
             </h2>
           </div>
           <span className="preview-label">SOLANA ANALYSIS WORKSPACE</span>
+          {isDemoMode() && (
+            <span className="sample-pill">DEMO MODE · SCRIPTED OUTPUT</span>
+          )}
         </div>
         <div className="workspace-shell">
           <div
