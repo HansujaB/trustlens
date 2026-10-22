@@ -13,3 +13,9 @@ Acceptance:
 - `npm test` green.
 
 Demo relevance: avoids awkward "why is price blank?" moment.
+
+## Acceptance log (2026-10-22)
+- Live report `538c5df8…`: `trade.status=unsupported` + honest reason (no 2-token Jupiter candidate), no 500.
+- `LiveReport.jsx:263-265` renders `Trade comparison: <status>` + reason; `estimated` branch untouched.
+- `FeatureRoadmap.jsx:33-34` already labels historical USD “PROVIDER REQUIRED”.
+- Decision: no Pro key → keep `unavailable/unsupported`, no spot-price substitution (per plan.md §9). No code changes.
