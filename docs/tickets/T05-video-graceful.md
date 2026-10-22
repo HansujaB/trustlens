@@ -15,3 +15,8 @@ Acceptance:
 - Silent MP4 artifact exists locally.
 
 Demo relevance: safe to show or skip on camera without breakage.
+
+## Acceptance log (2026-10-22)
+- `POST /api/reports/538c5df8…/video` → 503 `VIDEO_NOT_CONFIGURED` clean, report unaffected.
+- `npm run test:video` (T01) rendered 237KB silent MP4 — Remotion path proven, live TTS pending keys.
+- `LiveReport.jsx:341` Generate button present; safe to show-or-skip on camera. No code changes.
