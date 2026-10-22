@@ -19,7 +19,7 @@ Verified 2026-10-22. Fallback for every beat included.
 2. Show: headline "5 supported transfer(s) explained.", exact fee `20000 lamports`, steps, 8 findings.
 3. Open research drawer: `pAMMBay6…` → status `complete`, Helius excerpt, `exact_identifier_mention`. Read the disclaimer aloud: *"A page mention does not establish ownership, safety, or incident relevance."*
 4. Show second identifier `pfeeUxB…` → `no_sources` — honest empty state.
-5. Trade comparison → `unsupported` ("No unambiguous two-token candidate…"). Say: *"Historical USD needs CoinGecko Pro — disabled tonight, so it says so instead of inventing a price."*
+5. Trade comparison → `unsupported`/`unavailable` with reason (read the exact status word off-screen). Say: *"Historical USD needs CoinGecko Pro — disabled tonight, so it says so instead of inventing a price."*
 
 Fallback: if RPC throttled, show cached report + `retrievedAt` timestamp, label as replay.
 

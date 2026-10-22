@@ -16,4 +16,4 @@ Demo relevance: RECORDING SCRIPT — this is what you read on camera.
 
 ## Acceptance log (2026-10-22)
 - Wrote `docs/DEMO.md`: 4 beats (~5 min) using verified sig `5nP5…` (report `538c5df8…`), fresh devnet presign payload pattern (`live-smoke.js:26-40`), share `cbc5342c…`.
-- Success sig covers unsupported-instruction warning (12/19 supported) + failure-adjacent presign beat covers `AccountNotFound` explanation — no separate failed-mainnet sig needed tonight.
+- Success sig covers unsupported-instruction warning (12 of 19 instructions supported; headline counts 5 supported transfers — different units) + failure-adjacent presign beat covers `AccountNotFound` explanation — no separate failed-mainnet sig needed tonight.
