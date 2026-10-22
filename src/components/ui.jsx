@@ -1,10 +1,10 @@
 import { ArrowUpRight, Check, Search } from "lucide-react";
 
-export function Brand({ light = false }) {
+export function Brand({ light = false, href = "#top" }) {
   return (
     <a
       className={`brand ${light ? "brand-light" : ""}`}
-      href="#top"
+      href={href}
       aria-label="TrustLens home"
     >
       <span className="brand-symbol">

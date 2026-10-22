@@ -1942,6 +1942,11 @@ p {
   max-width: 600px;
 }
 
+.share-page {
+  padding-top: 40px;
+  padding-bottom: 96px;
+}
+
 /* Footer and dialog */
 .site-footer {
   padding-top: 45px;

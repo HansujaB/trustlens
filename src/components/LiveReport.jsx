@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useWalletAuth } from "../lib/WalletAuth";
+import { ArrowUpRight } from "lucide-react";
 import { api, waitForJob } from "../lib/api";
+import { Brand } from "./ui";
 import { DEMO_SHARE_ID, buildDemoReport, demoShareUrl, isDemoMode } from "../lib/demoReport";
 
 export function shortAddr(value) {
@@ -170,14 +172,18 @@ export default function LiveReport({
     [message, setMessage] = useState(""),
     [link, setLink] = useState(""),
     [video, setVideo] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [copyHint, setCopyHint] = useState("Click the link to copy it.");
   const controller = useRef();
   const dialogRef = useRef();
   useEffect(() => () => controller.current?.abort(), []);
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (link && !dialog.open) dialog.showModal();
+    if (link) {
+      setCopyHint("Click the link to copy it.");
+      if (!dialog.open) dialog.showModal();
+    }
     if (!link && dialog.open) dialog.close();
   }, [link]);
   async function copyLink() {
@@ -191,8 +197,7 @@ export default function LiveReport({
       document.execCommand("copy");
       area.remove();
     }
-    setMessage("Share link copied to clipboard.");
-    setLink("");
+    setCopyHint("Copied to clipboard.");
   }
   async function action(kind) {
     setBusy(true);
@@ -514,7 +519,7 @@ export default function LiveReport({
           >
             {link}
           </button>
-          <p className="dialog-footnote">Click the link to copy it.</p>
+          <p className="dialog-footnote">{copyHint}</p>
         </div>
       </dialog>
       {video && (
@@ -555,15 +560,27 @@ export function SharedReport({ id }) {
     return () => controller.abort();
   }, [id]);
   return (
-    <main className="container">
-      <a href="/">TrustLens home</a>
-      {error ? (
-        <p role="alert">{error}</p>
-      ) : report ? (
-        <LiveReport report={report} publicView />
-      ) : (
-        <p>Loading shared report…</p>
-      )}
-    </main>
+    <>
+      <header className="site-header">
+        <div className="container nav-wrap">
+          <Brand href="/" />
+          <div className="nav-actions">
+            <span className="sample-pill">SHARED SNAPSHOT</span>
+            <a href="/" className="nav-cta">
+              Open workspace <ArrowUpRight size={15} />
+            </a>
+          </div>
+        </div>
+      </header>
+      <main className="container share-page">
+        {error ? (
+          <p role="alert">{error}</p>
+        ) : report ? (
+          <LiveReport report={report} publicView />
+        ) : (
+          <p>Loading shared report…</p>
+        )}
+      </main>
+    </>
   );
 }
