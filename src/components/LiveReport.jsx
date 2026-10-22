@@ -61,7 +61,7 @@ export function groupFindings(findings = []) {
   return groups;
 }
 
-export function GlossaryTerm({ name }) {
+export function AccountControls({ onLoad }) {
   const [open, setOpen] = useState(false),
     [entry, setEntry] = useState(null);
   async function toggle() {
@@ -96,6 +96,70 @@ export function GlossaryTerm({ name }) {
         </span>
       )}
     </span>
+  );
+}
+
+const VIDEO_STEPS = [
+  { id: "narration", label: "Narration", dur: "2.2s" },
+  { id: "rendering", label: "Rendering", dur: "5.2s" },
+  { id: "encoding", label: "Encoding", dur: "2.1s" },
+];
+
+export function VideoSteps({ step }) {
+  const R = 26,
+    C = 2 * Math.PI * R;
+  return (
+    <div className="video-steps" aria-label="Video generation progress">
+      {VIDEO_STEPS.map((s, i) => {
+        const state =
+          step === "done" || i < step
+            ? "done"
+            : i === step
+              ? "active"
+              : "pending";
+        return (
+          <div className="vstep-frag" key={s.id} style={{ display: "contents" }}>
+            {i > 0 && (
+              <div
+                className={`vstep-connector ${i <= step || step === "done" ? "fill" : ""}`}
+                aria-hidden="true"
+              >
+                <span />
+              </div>
+            )}
+            <div className={`vstep vstep-${state}`}>
+              <span className="vstep-dot">
+                <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+                  <circle cx="32" cy="32" r={R} fill={state === "done" ? "#315ed8" : "none"} stroke="#dbe3f5" strokeWidth="6" />
+                  {state === "active" && (
+                    <circle
+                      className="step-ring"
+                      cx="32"
+                      cy="32"
+                      r={R}
+                      fill="none"
+                      stroke="#315ed8"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      strokeDasharray={C}
+                      style={{ "--c": C, "--d": s.dur }}
+                      transform="rotate(-90 32 32)"
+                    />
+                  )}
+                </svg>
+                <span className="vstep-mark">
+                  {state === "done" ? <Check size={20} /> : i + 1}
+                </span>
+              </span>
+              <span className="vstep-label">{s.label}</span>
+              <span className="vstep-state">
+                {state === "done" ? "Done" : state === "active" ? "Working…" : "Queued"}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -173,6 +237,7 @@ export default function LiveReport({
     [link, setLink] = useState(""),
     [video, setVideo] = useState(""),
     [busy, setBusy] = useState(false),
+    [videoStep, setVideoStep] = useState(null),
     [copyHint, setCopyHint] = useState("Click the link to copy it.");
   const controller = useRef();
   const dialogRef = useRef();
@@ -219,13 +284,15 @@ export default function LiveReport({
       }
       if (kind === "video") {
         controller.current = new AbortController();
+        setVideoStep(0);
         if (report.demo) {
-          for (const [stage, wait] of [
+          for (const [i, [stage, wait]] of [
             ["narration", 2200],
             ["rendering", 5200],
             ["encoding", 2100],
-          ]) {
+          ].entries()) {
             controller.current.signal.throwIfAborted();
+            setVideoStep(i);
             setMessage(`Video: ${stage}`);
             await new Promise((resolve, reject) => {
               const timer = setTimeout(resolve, wait);
@@ -240,16 +307,22 @@ export default function LiveReport({
             });
           }
           setVideo("/demo-explainer.mp4");
+          setVideoStep("done");
           setMessage("Narrated video ready.");
           return;
         }
         const job = await api(`/reports/${report.id}/video`, "POST");
         const result = await waitForJob(
           job,
-          (j) => setMessage(`Video: ${j.stage}`),
+          (j) => {
+            setMessage(`Video: ${j.stage}`);
+            const i = ["narration", "rendering"].indexOf(j.stage);
+            if (i >= 0) setVideoStep(i);
+          },
           controller.current.signal,
         );
         setVideo(result.url);
+        setVideoStep("done");
         setMessage("Narrated video ready.");
       }
     } catch (e) {
@@ -514,6 +587,7 @@ export default function LiveReport({
         </>
       )}
       {message && <p role="status">{message}</p>}
+      {videoStep !== null && <VideoSteps step={videoStep} />}
       <dialog
         ref={dialogRef}
         className="preview-dialog"
