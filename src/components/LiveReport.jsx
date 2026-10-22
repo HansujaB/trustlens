@@ -220,11 +220,15 @@ export default function LiveReport({
       if (kind === "video") {
         controller.current = new AbortController();
         if (report.demo) {
-          for (const stage of ["narration", "rendering", "encoding"]) {
+          for (const [stage, wait] of [
+            ["narration", 2200],
+            ["rendering", 5200],
+            ["encoding", 2100],
+          ]) {
             controller.current.signal.throwIfAborted();
             setMessage(`Video: ${stage}`);
             await new Promise((resolve, reject) => {
-              const timer = setTimeout(resolve, 900);
+              const timer = setTimeout(resolve, wait);
               controller.current.signal.addEventListener(
                 "abort",
                 () => {
