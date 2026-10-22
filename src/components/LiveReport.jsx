@@ -61,7 +61,7 @@ export function groupFindings(findings = []) {
   return groups;
 }
 
-export function AccountControls({ onLoad }) {
+export function GlossaryTerm({ name }) {
   const [open, setOpen] = useState(false),
     [entry, setEntry] = useState(null);
   async function toggle() {
