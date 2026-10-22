@@ -172,7 +172,28 @@ export default function LiveReport({
     [video, setVideo] = useState(""),
     [busy, setBusy] = useState(false);
   const controller = useRef();
+  const dialogRef = useRef();
   useEffect(() => () => controller.current?.abort(), []);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (link && !dialog.open) dialog.showModal();
+    if (!link && dialog.open) dialog.close();
+  }, [link]);
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = link;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    setMessage("Share link copied to clipboard.");
+    setLink("");
+  }
   async function action(kind) {
     setBusy(true);
     setMessage("");
@@ -464,11 +485,38 @@ export default function LiveReport({
         </>
       )}
       {message && <p role="status">{message}</p>}
-      {link && (
-        <p>
-          <a href={link}>{link}</a>
-        </p>
-      )}
+      <dialog
+        ref={dialogRef}
+        className="preview-dialog"
+        aria-labelledby="share-dialog-title"
+        onClose={() => setLink("")}
+        onClick={(e) => {
+          if (e.target === dialogRef.current) dialogRef.current.close();
+        }}
+      >
+        <div className="dialog-content">
+          <button
+            type="button"
+            className="dialog-close"
+            aria-label="Close share dialog"
+            onClick={() => dialogRef.current?.close()}
+          >
+            ✕
+          </button>
+          <h2 id="share-dialog-title">Share link ready</h2>
+          <p>Anyone with this link can view this report.</p>
+          <button
+            type="button"
+            className="button button-blue"
+            autoFocus
+            style={{ overflowWrap: "anywhere", textAlign: "left" }}
+            onClick={copyLink}
+          >
+            {link}
+          </button>
+          <p className="dialog-footnote">Click the link to copy it.</p>
+        </div>
+      </dialog>
       {video && (
         <>
           <video
