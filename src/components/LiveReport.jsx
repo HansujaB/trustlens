@@ -219,6 +219,26 @@ export default function LiveReport({
       }
       if (kind === "video") {
         controller.current = new AbortController();
+        if (report.demo) {
+          for (const stage of ["narration", "rendering", "encoding"]) {
+            controller.current.signal.throwIfAborted();
+            setMessage(`Video: ${stage}`);
+            await new Promise((resolve, reject) => {
+              const timer = setTimeout(resolve, 900);
+              controller.current.signal.addEventListener(
+                "abort",
+                () => {
+                  clearTimeout(timer);
+                  reject(new DOMException("Aborted", "AbortError"));
+                },
+                { once: true },
+              );
+            });
+          }
+          setVideo("/demo-explainer.mp4");
+          setMessage("Narrated video ready.");
+          return;
+        }
         const job = await api(`/reports/${report.id}/video`, "POST");
         const result = await waitForJob(
           job,
