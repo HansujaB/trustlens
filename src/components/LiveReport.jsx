@@ -100,17 +100,17 @@ export function GlossaryTerm({ name }) {
 }
 
 const VIDEO_STEPS = [
-  { id: "narration", label: "Narration", dur: "2.2s" },
-  { id: "rendering", label: "Rendering", dur: "5.2s" },
-  { id: "encoding", label: "Encoding", dur: "2.1s" },
+  { id: "narration", label: "Narration" },
+  { id: "rendering", label: "Rendering" },
+  { id: "encoding", label: "Encoding" },
 ];
 
-export function VideoSteps({ step }) {
+export function VideoSteps({ step, steps = VIDEO_STEPS }) {
   const R = 26,
     C = 2 * Math.PI * R;
   return (
-    <div className="video-steps" aria-label="Video generation progress">
-      {VIDEO_STEPS.map((s, i) => {
+    <div className="video-steps" aria-label="Progress">
+      {steps.map((s, i) => {
         const state =
           step === "done" || i < step
             ? "done"
@@ -133,7 +133,7 @@ export function VideoSteps({ step }) {
                   <circle cx="32" cy="32" r={R} fill={state === "done" ? "#315ed8" : "none"} stroke="#dbe3f5" strokeWidth="6" />
                   {state === "active" && (
                     <circle
-                      className="step-ring"
+                      className="step-arc"
                       cx="32"
                       cy="32"
                       r={R}
@@ -141,9 +141,7 @@ export function VideoSteps({ step }) {
                       stroke="#315ed8"
                       strokeWidth="6"
                       strokeLinecap="round"
-                      strokeDasharray={C}
-                      style={{ "--c": C, "--d": s.dur }}
-                      transform="rotate(-90 32 32)"
+                      strokeDasharray={`${C * 0.32} ${C * 0.68}`}
                     />
                   )}
                 </svg>

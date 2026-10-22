@@ -2009,15 +2009,25 @@ p {
 .vstep-connector.fill > span {
   width: 100%;
 }
-.step-ring {
-  animation: ring-draw var(--d, 2.4s) linear forwards;
+.step-arc {
+  animation: step-spin 5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
-@keyframes ring-draw {
+@keyframes step-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.vstep-done .vstep-dot > svg {
+  animation: step-pop 0.25s ease;
+}
+@keyframes step-pop {
   from {
-    stroke-dashoffset: var(--c);
+    transform: scale(0.7);
   }
   to {
-    stroke-dashoffset: 0;
+    transform: scale(1);
   }
 }
 

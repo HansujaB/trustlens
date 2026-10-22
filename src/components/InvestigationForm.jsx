@@ -12,9 +12,16 @@ import {
   Waves,
 } from "lucide-react";
 import { validateInput } from "../lib/inputValidation";
-import LiveReport, { AccountControls } from "./LiveReport";
+import LiveReport, { AccountControls, VideoSteps } from "./LiveReport";
 import { api, waitForJob } from "../lib/api";
 import { buildDemoReport, isDemoMode } from "../lib/demoReport";
+
+const ANALYSIS_STEPS = [
+  { id: "fetching", label: "Fetching" },
+  { id: "decoding", label: "Decoding" },
+  { id: "evidence", label: "Evidence" },
+  { id: "report", label: "Report" },
+];
 
 const modes = [
   {
@@ -278,6 +285,7 @@ export default function InvestigationForm() {
   const [busy, setBusy] = useState(false);
   const [intentOwner, setIntentOwner] = useState("");
   const [maxLamports, setMaxLamports] = useState("");
+  const [analysisStep, setAnalysisStep] = useState(null);
   const controller = useRef();
   useEffect(() => () => controller.current?.abort(), []);
   const tabs = useRef([]);
@@ -295,22 +303,23 @@ export default function InvestigationForm() {
     setError("");
     setReport(null);
     setSample(false);
+    setAnalysisStep(null);
     setBusy(true);
     controller.current = new AbortController();
     try {
       if (isDemoMode()) {
-        const stages = [
-          "queued",
-          "fetching transaction",
-          "decoding instructions",
-          "researching identifiers",
-          "complete",
+        const phases = [
+          ["fetching transaction", 0, 1400],
+          ["decoding instructions", 1, 1900],
+          ["researching identifiers", 2, 1900],
+          ["building report", 3, 1300],
         ];
-        for (const stage of stages) {
+        for (const [stage, step, wait] of phases) {
           controller.current.signal.throwIfAborted();
           setNotice(`Analysis: ${stage}`);
+          setAnalysisStep(step);
           await new Promise((resolve, reject) => {
-            const timer = setTimeout(resolve, 550);
+            const timer = setTimeout(resolve, wait);
             controller.current.signal.addEventListener(
               "abort",
               () => {
@@ -322,6 +331,7 @@ export default function InvestigationForm() {
           });
         }
         setReport(buildDemoReport(input));
+        setAnalysisStep("done");
         setNotice("Analysis complete.");
         return;
       }
@@ -332,9 +342,16 @@ export default function InvestigationForm() {
         controller.current.signal,
       );
       setJob(queued);
+      setAnalysisStep(0);
       const result = await waitForJob(
         queued,
-        (j) => setNotice(`Analysis: ${j.stage}`),
+        (j) => {
+          setNotice(`Analysis: ${j.stage}`);
+          const i = ["onchain", "web-evidence", "explanation"].indexOf(
+            j.stage,
+          );
+          if (i >= 0) setAnalysisStep(i + 1);
+        },
         controller.current.signal,
       );
       setReport(
@@ -345,9 +362,13 @@ export default function InvestigationForm() {
           controller.current.signal,
         ),
       );
+      setAnalysisStep("done");
       setNotice("Analysis complete.");
     } catch (e) {
-      if (e.name !== "AbortError") setError(e.message);
+      if (e.name !== "AbortError") {
+        setError(e.message);
+        setAnalysisStep(null);
+      }
     } finally {
       setBusy(false);
       setJob(null);
@@ -564,6 +585,9 @@ export default function InvestigationForm() {
                 <p className="workspace-notice" role="status">
                   {notice}
                 </p>
+              )}
+              {analysisStep !== null && (
+                <VideoSteps steps={ANALYSIS_STEPS} step={analysisStep} />
               )}
               {job && (
                 <button
