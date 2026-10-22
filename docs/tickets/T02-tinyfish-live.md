@@ -17,3 +17,13 @@ Acceptance:
 - `npm test` still green (mocked providers untouched).
 
 Demo relevance: CORE DEMO BEAT — open cited source, state what it proves / doesn't prove.
+
+## Acceptance log (2026-10-22)
+- Sig `5nP5…ChDik23FP` (mainnet-beta) → job `b91767da…` complete in ~11s → report `538c5df8…`.
+- `capabilities.tinyfish:true`, `historicalPrices:false`, `video:false` (expected).
+- `research[0] pAMMBay6…`: status `complete`, 2 evidence, `exact_identifier_mention`, helius docs, retrievedAt `2026-10-22T03:57:26Z`.
+- `research[1] pfeeUxB…`: status `no_sources`, empty evidence (honest empty path works).
+- Report readable with research partial: headline, 8 findings, `researchCoverage` disclaimer present.
+- `trade.status` = unavailable (no CoinGecko key — see T04).
+- No code changes required; key stayed in gitignored local `.env` only.
+- TODO for full close: repeat-job cache check (`cached:true`) + bad-key `unavailable` path (5 min, do before recording).
