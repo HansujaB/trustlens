@@ -14,3 +14,8 @@ Acceptance:
 - Note wallet version + cluster in commit.
 
 Demo relevance: closing beat — "here's the share link".
+
+## Acceptance log (2026-10-22, API half)
+- `POST /api/reports/538c5df8…/share {publish:true}` → share `cbc5342c…`, url `/share/cbc5342c…`.
+- Anonymous `GET /api/shares/cbc5342c…` (no cookies) → full snapshot, headline "5 supported transfer(s) explained." — publish path proven without login.
+- Still manual (needs browser + Phantom, do before recording): wallet `signMessage` login → save → revoke → presign publish rejection. See `docs/DEMO.md` Beat 3.
