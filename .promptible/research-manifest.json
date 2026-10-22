@@ -1,0 +1,31 @@
+{
+  "version": 3,
+  "status": "RESEARCH_READY",
+  "createdAt": "2026-10-22T14:09:11.258Z",
+  "cacheKey": "846aa897d650b839bca5e83052b0244ff620c5f6ee7bda15aab2298f455e7661",
+  "researchMode": "authentic",
+  "visualMode": "product-ui",
+  "product": "TrustLens",
+  "referenceId": "openmontage-claude-pipeline",
+  "brief": "/home/arjun/Projects/personal/trustlens/.promptible/research-brief.md",
+  "briefSha": "9aa0ef0654e3c7dc4412df7446bfa609f8599898180ed02037443b04be8e6cb8",
+  "sources": [
+    "https://docs.jup.ag/"
+  ],
+  "logos": [
+    {
+      "kind": "logo",
+      "path": "/home/arjun/Projects/personal/trustlens/.promptible/research/trustlens-mark.svg",
+      "sha256": "4f1705729265e3f9eabc6a855e595e63d4f94a216ea1810d6920b35cdcfabb27",
+      "bytes": 527
+    }
+  ],
+  "surfaces": [
+    {
+      "kind": "surface",
+      "path": "/home/arjun/Projects/personal/trustlens/.promptible/research/trustlens-report.png",
+      "sha256": "e3320d972431ac6d4461fe396e13a83c6914d224378f764b848c14e6059cf9ae",
+      "bytes": 178695
+    }
+  ]
+}

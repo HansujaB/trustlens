@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 64">
+  <title>TrustLens brand mark (own product identity, text-based as on site)</title>
+  <g fill="none" stroke="#315ed8" stroke-width="4" stroke-linecap="round">
+    <circle cx="24" cy="26" r="14"/>
+    <line x1="34" y1="36" x2="46" y2="48"/>
+    <polyline points="17,26 23,32 32,20" stroke-width="3.4"/>
+  </g>
+  <text x="58" y="42" font-family="Georgia, serif" font-size="34" letter-spacing="-1" fill="#122145">trustlens<tspan fill="#315ed8">.</tspan></text>
+</svg>
