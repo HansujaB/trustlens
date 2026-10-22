@@ -2,6 +2,62 @@ import { useEffect, useRef, useState } from "react";
 import { useWalletAuth } from "../lib/WalletAuth";
 import { api, waitForJob } from "../lib/api";
 
+export function shortAddr(value) {
+  const s = String(value || "");
+  return s.length > 9 ? `${s.slice(0, 4)}…${s.slice(-4)}` : s;
+}
+
+export function formatRaw(raw, decimals = 9) {
+  const n = BigInt(raw);
+  const negative = n < 0n;
+  const s = (negative ? -n : n).toString().padStart(decimals + 1, "0");
+  return `${negative ? "-" : ""}${decimals ? `${s.slice(0, -decimals)}.${s.slice(-decimals)}`.replace(/\.?0+$/, "") : s}`;
+}
+
+/** Net per-owner, per-mint balance changes. Display-only grouping of facts. */
+export function netMovements(assetChanges = []) {
+  const totals = new Map();
+  for (const c of assetChanges) {
+    if (!c || c.owner == null || c.rawAmount == null) continue;
+    const key = `${c.owner}|${c.mint || "SOL"}`;
+    const prev = totals.get(key);
+    if (prev && prev.decimals !== c.decimals) continue;
+    totals.set(key, {
+      owner: c.owner,
+      mint: c.mint,
+      symbol: c.symbol || (c.mint ? null : "SOL"),
+      decimals: c.decimals,
+      raw: (prev?.raw || 0n) + BigInt(c.rawAmount),
+    });
+  }
+  return [...totals.values()]
+    .filter((m) => m.raw !== 0n)
+    .sort((a, b) => {
+      const aa = a.raw < 0n ? -a.raw : a.raw;
+      const bb = b.raw < 0n ? -b.raw : b.raw;
+      return aa === bb ? 0 : aa > bb ? -1 : 1;
+    });
+}
+
+/** Collapse repeated identical findings (e.g. per-instruction coverage notes). */
+export function groupFindings(findings = []) {
+  const groups = [];
+  for (const f of findings) {
+    const last = groups[groups.length - 1];
+    if (
+      last &&
+      last.severity === f.severity &&
+      last.title === f.title &&
+      JSON.stringify(last.limitations) === JSON.stringify(f.limitations)
+    ) {
+      last.items.push(f);
+    } else {
+      groups.push({ ...f, items: [f] });
+    }
+  }
+  return groups;
+}
+
 export function GlossaryTerm({ name }) {
   const [open, setOpen] = useState(false),
     [entry, setEntry] = useState(null);
@@ -212,9 +268,37 @@ export default function LiveReport({
         <>
           <p>
             Cluster: {report.facts.cluster} · Status: {report.facts.status} ·
-            Decoded {report.facts.coverage.supported}/
-            {report.facts.coverage.total} instructions.
+            Fee: {formatRaw(report.facts.feeLamports, 9)} SOL (
+            {report.facts.feeLamports} lamports) paid by{" "}
+            {shortAddr(report.facts.feePayer)} · Decoded{" "}
+            {report.facts.coverage.supported}/{report.facts.coverage.total}{" "}
+            instructions.
           </p>
+          <details className="workspace-details" open>
+            <summary>
+              What moved (net per wallet,{" "}
+              {netMovements(report.facts.assetChanges).length} lines)
+            </summary>
+            <p>
+              <small>
+                Net balance changes per owner. Do not add these to the
+                instruction steps below — that would double-count the same
+                money.
+              </small>
+            </p>
+            <ul>
+              {netMovements(report.facts.assetChanges).map((m, i) => (
+                <li key={i}>
+                  {shortAddr(m.owner)} {m.raw < 0n ? "sent" : "received"}{" "}
+                  <strong>
+                    {formatRaw(m.raw < 0n ? -m.raw : m.raw, m.decimals)}{" "}
+                    {m.symbol || shortAddr(m.mint)}
+                  </strong>{" "}
+                  <small>({m.raw.toString()} base units)</small>
+                </li>
+              ))}
+            </ul>
+          </details>
           <p>
             Learn: <GlossaryTerm name="instruction" /> ·{" "}
             <GlossaryTerm name="lamport" /> · <GlossaryTerm name="delegate" /> ·{" "}
@@ -225,13 +309,26 @@ export default function LiveReport({
               <li key={s.index}>{s.text}</li>
             ))}
           </ol>
-          {report.findings.map((f, i) => (
+          {groupFindings(report.findings).map((f, i) => (
             <div className="review-finding" key={i}>
               <div>
                 <strong>
                   {f.severity.toUpperCase()} · {f.title}
+                  {f.items.length > 1 ? ` (×${f.items.length})` : ""}
                 </strong>
-                <p>{f.explanation}</p>
+                {f.items.length > 1 ? (
+                  <details>
+                    <summary>
+                      {f.items.length} similar notes — expand for each
+                      instruction
+                    </summary>
+                    {f.items.map((item, j) => (
+                      <p key={j}>{item.explanation}</p>
+                    ))}
+                  </details>
+                ) : (
+                  <p>{f.explanation}</p>
+                )}
                 {f.limitations.map((l, j) => (
                   <small key={j}>{l}</small>
                 ))}
@@ -239,7 +336,7 @@ export default function LiveReport({
             </div>
           ))}
           {report.simulation && (
-            <details className="workspace-details" open>
+            <details className="workspace-details">
               <summary>Simulation: {report.simulation.status}</summary>
               <p>{report.simulation.limitations.join(" ")}</p>
               <pre>{JSON.stringify(report.simulation, null, 2)}</pre>
@@ -373,13 +470,18 @@ export function SharedReport({ id }) {
   const [report, setReport] = useState(null),
     [error, setError] = useState("");
   useEffect(() => {
-    fetch(`/api/shares/${id}`)
+    const controller = new AbortController();
+    fetch(`/api/shares/${id}`, { signal: controller.signal })
       .then(async (r) => {
         const body = await r.json();
-        if (!r.ok) throw new Error(body.error.message);
+        if (!r.ok)
+          throw new Error(body?.error?.message || "Share link is invalid.");
         setReport(body);
       })
-      .catch((e) => setError(e.message));
+      .catch((e) => {
+        if (e.name !== "AbortError") setError(e.message);
+      });
+    return () => controller.abort();
   }, [id]);
   return (
     <main className="container">
